@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Post test</title>
+</head>
+<body>
+<script>
+async function postData(url = '', data = {}){
+	// 注释中带*为缺省值
+	let res = await fetch(url, {
+        method: 'POST', //访问方法：*GET, POST, PUT, DELETE, etc.
+        mode: 'cors', //跨域访问:no-cors, *cors, same-origin
+		cache:'no-cache', //缓存方法：*default, no-cache, reload, force-cache, only-if-cached
+        headers: new Headers({   //提交数据类型
+            'Content-Type': 'application/json;charset=utf-8'
+        }),
+		body: JSON.stringify(data) //body的数据类型要和"Content-Type"一致
+        });
+	//console.log(res);
+	return res.json(); // 将JSON转成Javascript对象
+}
+
+//待提交的数据
+let user = {username:'test', password:'1234'};
+
+//向/test提交数据
+postData('http://localhost:5000/test', user).then(data => {
+	//服务器返回的数据
+	document.write(JSON.stringify(data));
+});
+</script>
+</body>
+</html>
