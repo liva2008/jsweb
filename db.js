@@ -1,4 +1,4 @@
-import { Database} from './database.js';
+import { Database } from './mod.js';
 
 // deno run --allow-net --allow-read db.js
 let db = new Database('deno');
@@ -36,7 +36,7 @@ let r2 = await db.execute(`select * from student`);
 console.log(r2);
 
 //if update, delete, insert return affected rows. 
-let r3 = await db.execute(`insert into student values('10009', 'liva', '男', 25, 'cs')`);
+let r3 = await db.execute(`insert into student values('10011', 'liva', '男', 25, 'cs')`);
 console.log(r3);
 
 // close database

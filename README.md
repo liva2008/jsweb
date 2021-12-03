@@ -112,8 +112,8 @@ app.listen('127.0.0.1', 5000);
 ## mysql
 
 ```javascript
-import { Database } from "https://deno.land/x/jsweb@v0.1.3/database.js"; //remote
-//import { Database} from './database.js'; //local
+import { Database } from "https://deno.land/x/jsweb@v0.1.3/mod.js"; //remote
+//import { Database} from './mod.js'; //local
 
 // deno run --allow-net --allow-read db.js
 let db = new Database('deno');
