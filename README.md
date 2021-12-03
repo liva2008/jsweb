@@ -7,7 +7,10 @@
 ```javascript
 
 let app = new Application('deno'); // select deno
-let app = new Application('node'); //select node
+let app = new Application('node'); // select node
+
+let db = new Database('deno'); // select deno
+let db = new Database('node'); // select node
 
 ```
 
