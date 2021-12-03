@@ -1,6 +1,6 @@
 import { Application, Router,cors } from "./mod.js";
 
-let app = new Application('deno');
+let app = new Application('node');
 let router = new Router();
 
 app.use(async (ctx, next) => {  

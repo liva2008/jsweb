@@ -17,7 +17,8 @@ let app = new Application('node'); //select node
   
 ```javascript
 
-import { Application, Router,cors } from "./mod.js";
+import { Application, Router,cors } from "https://deno.land/x/jsweb@v0.1.0/mod.js"; //remote
+//import { Application, Router,cors } from "./mod.js"; //local
 
 let app = new Application('deno');
 let router = new Router();
@@ -55,7 +56,7 @@ app.listen('127.0.0.1', 5000);
 
 ```javascript
 
-import { Application, Router,cors } from "./mod.js";
+import { Application, Router,cors } from "./mod.js"; //local
 
 let app = new Application('node');
 let router = new Router();

@@ -92,7 +92,7 @@ export class Application {
 
         //服务器监听
         server.listen(port, hostname, () => {
-            console.log(`Server running at http://${hostname}:${port}/`);
+            console.log(`jsWeb running. Access it at: http://${hostname}:${port}/`);
         });
     }
 
