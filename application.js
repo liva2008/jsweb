@@ -34,6 +34,8 @@ export class Application {
             const ctx = new Context(this, request);
             let url = new URL(ctx.req.url);
             ctx.req.pathname = url.pathname;
+            //parse get params
+            ctx.req.get = url.searchParams;
             if (ctx.req.method === 'POST') {
                 //Reading post data
                 ctx.req.post = await ctx.req.json();
@@ -52,7 +54,7 @@ export class Application {
         };
 
         //启动服务器
-        console.log(`jsWeb running. Access it at: http://${addr}/`);
+        console.log(`jsWeb running on ${this.platform}. Access it at: http://${addr}/`);
         await serve(handler, {
             addr
         });
@@ -60,9 +62,18 @@ export class Application {
 
     async listen2(hostname = '127.0.0.1', port = 5000) {
         let http = await import('http');
+        let { URL } = await import('url');
+
         const server = http.createServer(async (req, res) => {
+            
             const ctx = new Context(this, req);
-            ctx.req.pathname = ctx.req.url;
+            
+            let url = new URL(req.url, `http://${req.headers.host}`);
+            //parse pathname
+            ctx.req.pathname = url.pathname;
+            //parse get params
+            ctx.req.get = url.searchParams;
+
             if (ctx.req.method == 'POST') {
                 //Reading post data
                 let data = '';
@@ -92,7 +103,7 @@ export class Application {
 
         //服务器监听
         server.listen(port, hostname, () => {
-            console.log(`jsWeb running. Access it at: http://${hostname}:${port}/`);
+            console.log(`jsWeb running on ${this.platform}. Access it at: http://${hostname}:${port}/`);
         });
     }
 

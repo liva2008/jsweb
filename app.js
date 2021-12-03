@@ -1,18 +1,27 @@
 import { Application, Router,cors } from "./mod.js";
 
-let app = new Application('node');
+let app = new Application('deno');
 let router = new Router();
 
+/*
 app.use(async (ctx, next) => {  
     console.log(ctx.req.url);
     await next();
 });
+*/
 
 app.use(cors);
 
-//get test using http://127.0.0.1:5000/
-router.get('/', function (ctx) {
+//get test using http://127.0.0.1:5000/hello
+router.get('/hello', function (ctx) {
     let body = "<h1>Hello jsweb</h1>";
+    ctx.res.setHeader("Content-Type",'text/html');
+    ctx.res.body = body;
+})
+
+//get with params test using http://127.0.0.1:5000/test?name=jsweb
+router.get('/test', function (ctx) {
+    let body = `<h1>Hello ${ctx.req.get.get('name')}</h1>`;
     ctx.res.setHeader("Content-Type",'text/html');
     ctx.res.body = body;
 })

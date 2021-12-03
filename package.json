@@ -1,6 +1,6 @@
 {
-  "name":"jsweb",
-  "version": "0.1.0",
+  "name":"jswe",
+  "version": "0.1.1",
   "main":"mod.js",
   "type": "module"
 }
