@@ -75,7 +75,16 @@ app.listen('127.0.0.1', 5000);
 
 ## Database
 
-- Database switch mysql and sqlite is only two place to modify.
+- deno dependencies:
+    - https://deno.land/x/mysql/mod.ts
+    - https://deno.land/x/sqlite/mod.ts
+
+- node dependencies:
+    - npm install mysql2 --save
+    - npm install sqlite3 --save
+    - npm install sqlite --save 
+
+- Database switch mysql and sqlite is two place to modify.
 
 ```javascript
 
@@ -87,15 +96,6 @@ await db.connect('hello', 'localhost', 'root', '123456')
 let db = new Database('node','sqlite'); 
 await db.connect('hello.db');
 ```
-
-- deno dependencies:
-    - https://deno.land/x/mysql/mod.ts
-    - https://deno.land/x/sqlite/mod.ts
-
-- node dependencies:
-    - npm install mysql2 --save
-    - npm install sqlite3 --save
-    - npm install sqlite --save 
 
 - db.js
 
