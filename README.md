@@ -22,8 +22,8 @@ let app = new Application('node'); // select node
 
 ```javascript
 
-//import { Application, Router,cors } from "https://deno.land/x/jsweb@v0.1.4/mod.js"; //remote
-import { Application, Router,cors } from "./mod.js";
+import { Application, Router,cors } from "https://deno.land/x/jsweb@v0.1.4/mod.js"; //remote
+//import { Application, Router,cors } from "./mod.js";
 
 // deno run --allow-net app.js
 // node app.js
@@ -70,19 +70,22 @@ app.listen('127.0.0.1', 5000);
 
 - run app.js
 > deno run --allow-net app.js
+
 > node app.js
 
 ## Database
 
-- Database switch mysql and sqlite is only one place to modify.
+- Database switch mysql and sqlite is only two place to modify.
 
 ```javascript
 
 // first parameters select deno, second parameters select database
 let db = new Database('deno','mysql'); 
+await db.connect('hello', 'localhost', 'root', '123456')
+
 // first parameters select node, second parameters select database
 let db = new Database('node','sqlite'); 
-
+await db.connect('hello.db');
 ```
 
 - deno dependencies:
@@ -156,4 +159,5 @@ await db.close();
 
 - run db.js
 > deno run --allow-net --allow-read --allow-write db.js
+
 > node db.js
