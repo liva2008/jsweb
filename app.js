@@ -1,4 +1,4 @@
-//import { Application, Router,cors } from "https://deno.land/x/jsweb@v0.1.4/mod.js"; //remote
+//import { Application, Router,cors } from "https://deno.land/x/jsweb/mod.js"; //remote
 import { Application, Router,cors } from "./mod.js";
 
 // deno run --allow-net app.js

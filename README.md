@@ -22,7 +22,7 @@ let app = new Application('node'); // select node
 
 ```javascript
 
-import { Application, Router,cors } from "https://deno.land/x/jsweb@v0.1.4/mod.js"; //remote
+import { Application, Router,cors } from "https://deno.land/x/jsweb/mod.js"; //remote
 //import { Application, Router,cors } from "./mod.js";
 
 // deno run --allow-net app.js
@@ -100,7 +100,7 @@ await db.connect('hello.db');
 - db.js
 
 ```javascript
-import { Database } from "https://deno.land/x/jsweb@v0.1.4/mod.js"; //remote
+import { Database } from "https://deno.land/x/jsweb/mod.js"; //remote
 //import { Database } from './mod.js'; //local
 
 // deno run --allow-net --allow-read --allow-write db.js

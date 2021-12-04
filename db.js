@@ -1,4 +1,4 @@
-//import { Database } from "https://deno.land/x/jsweb@v0.1.4/mod.js"; //remote
+//import { Database } from "https://deno.land/x/jsweb/mod.js"; //remote
 import { Database } from './mod.js';
 
 // deno run --allow-net --allow-read --allow-write db.js
