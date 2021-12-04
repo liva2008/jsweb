@@ -79,7 +79,7 @@ app.listen('127.0.0.1', 5000);
     - https://deno.land/x/mysql/mod.ts
     - https://deno.land/x/sqlite/mod.ts
 
-- node dependencies:
+- node dependencies:(Install by double click node.bat on windows )
     - npm install mysql2 --save
     - npm install sqlite3 --save
     - npm install sqlite --save 
