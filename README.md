@@ -153,3 +153,7 @@ console.log(r3);
 await db.close();
 
 ```
+
+- run db.js
+> deno run --allow-net --allow-read --allow-write db.js
+> node db.js
