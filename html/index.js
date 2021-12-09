@@ -134,7 +134,17 @@ async function postBLOB(url = '', data = new Blob(), type = 'text/*') {
         return res.text();  //String
     }
     else{ // image/*, audio/*, video/*, application/*
-        return res.blob();  //Blob
+        let ret = await  res.blob();  //Blob
+        // Blob to arrayBuffer
+        //let ab = await ret.arrayBuffer();
+        //console.log(ab, 'test');
+        return ret;
+        
+        /* ArrayBuffer to Blob
+        let ret = await res.arrayBuffer();
+        console.log(ret);
+        return new Blob([ret], {type:type1});
+        */
     }
     return ;  
 }

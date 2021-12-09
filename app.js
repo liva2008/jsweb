@@ -3,7 +3,7 @@ import { Application, Router,cors } from "./mod.js";
 
 // deno run --allow-net app.js
 // node app.js
-let app = new Application('deno');
+let app = new Application('node');
 let router = new Router();
 
 
