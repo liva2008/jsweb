@@ -5,13 +5,15 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Post test</title>
+	<script src='index.js'></script>
 </head>
 
 <body>
 	<form id="myForm">
 		<input type='text' id='username' name='username'>
 		<input type="password" id='password' name="password">
-		<input type="file" id='myfile' name="myfile">
+		<input type="file" id='myfile' name="myfile" accept="image/*" multiple onchange="sendBLOB1(this.files)">
+		<input type="file" id='myfile' name="myfile1" accept="application/*">
 		<input type="button" onclick="sendJSON()" value="sendJSON">
 		<input type="button" onclick="sendFORM()" value="sendFORM">
 		<input type="button" onclick="sendTEXT()" value="sendTEXT">
@@ -19,52 +21,6 @@
 	</form>
 	<div id="result"></div>
 	<script>
-		async function postJSON(url = '', data = {}) {
-			// 注释中带*为缺省值
-			let res = await fetch(url, {
-				method: 'POST', //访问方法：*GET, POST, PUT, DELETE, etc.
-				mode: 'cors', //跨域访问:no-cors, *cors, same-origin
-				cache: 'no-cache', //缓存方法：*default, no-cache, reload, force-cache, only-if-cached
-				headers: new Headers({   //提交数据类型
-					'Content-Type': 'application/json;charset=utf-8'
-				}),
-				body: JSON.stringify(data) //body的数据类型要和"Content-Type"一致
-			});
-			//console.log(res);
-			return res.json(); // 将JSON转成Javascript对象
-		}
-
-		async function postFORM(url = '', data = new FormData()) {
-			// 注释中带*为缺省值
-			let res = await fetch(url, {
-				method: 'POST', //访问方法：*GET, POST, PUT, DELETE, etc.
-				mode: 'cors', //跨域访问:no-cors, *cors, same-origin
-				cache: 'no-cache', //缓存方法：*default, no-cache, reload, force-cache, only-if-cached
-				headers: new Headers({   //提交数据类型
-					//'Content-Type': 'multipart/form-data'
-				}),
-				body: data //body的数据类型要和"Content-Type"一致
-			});
-			//console.log(res);
-			return res.formData(); // 将FormData转成Javascript对象
-		}
-
-		async function postTEXT(url = '', data = '') {
-			// 注释中带*为缺省值
-			let res = await fetch(url, {
-				method: 'POST', //访问方法：*GET, POST, PUT, DELETE, etc.
-				mode: 'cors', //跨域访问:no-cors, *cors, same-origin
-				cache: 'no-cache', //缓存方法：*default, no-cache, reload, force-cache, only-if-cached
-				headers: new Headers({   //提交数据类型
-					'Content-Type': 'text/plain;charset=utf-8'
-				}),
-				body: data //body的数据类型要和"Content-Type"一致
-			});
-			//console.log(res);
-			return res.text();
-		}
-
-
 		async function sendJSON() {
 			let username = document.querySelector('#username');
 			let password = document.querySelector('#password');
@@ -72,16 +28,7 @@
 			let user = { username: username.value, password: password.value };
 			console.log(user);
 
-			//向/test提交数据
-			/*
-			postJSON('http://localhost:5000/test', user).then(data => {
-				let ret = document.getElementById('result');
-				//服务器返回的数据
-				ret.innerHTML = JSON.stringify(data);
-			});
-			*/
-
-			let res = await postJSON('http://localhost:5000/test1', user);
+			let res = await postData('http://localhost:5000/test1', user, 'application/json');
 			let ret = document.getElementById('result');
 			//服务器返回的数据
 			ret.innerHTML = JSON.stringify(res);
@@ -94,7 +41,7 @@
 			let formdata = new FormData(form);
 			console.log(formdata);
 
-			let res = await postFORM('http://localhost:5000/test2', formdata);
+			let res = await postData('http://localhost:5000/test2', formdata, 'multipart/form-data');
 			let ret = document.getElementById('result');
 			//服务器返回的数据
 			ret.innerHTML = res.get('username') + "|" + res.get('password') + "|" + `<img src="${URL.createObjectURL(res.get('myfile'))}">`;
@@ -105,10 +52,43 @@
 			let username = document.querySelector('#username');
 			let password = document.querySelector('#password');
 
-			let res = await postTEXT('http://localhost:5000/test3', `${username.value}|${password.value}`);
+			let res = await postTEXT('http://localhost:5000/test3', `${username.value}|${password.value}`, 'text/plain');
 			let ret = document.getElementById('result');
 			//服务器返回的数据
 			ret.innerHTML = res;
+		}
+
+		async function sendBLOB() {
+
+			const leoHtmlFragment = ['<a id="a"><b id="b">hey leo！</b></a>']; // 一个包含 DOMString 的数组
+			const leoBlob = new Blob(leoHtmlFragment, { type: 'text/html' });   // 得到 blob
+			let res = await postData('http://localhost:5000/test4', leoBlob, 'text/html');
+			let ret = document.getElementById('result');
+			ret.innerHTML = res;
+		}
+
+		async function sendBLOB1(files) {
+
+			console.log(files[0]);
+
+			let res = await postData('http://localhost:5000/test5', files[0], files[0].type);
+			console.log(res);
+			let ext = '';
+			if(res.type == 'image/png')
+				ext = '.png';
+			else if(res.type == 'image/jpeg')
+				ext = '.jpg';
+			else if(res.type == 'image/gif')
+				ext = '.gif';
+			else if(res.type == 'image/svg+xml'){
+				ext = '.svg';
+			}
+			let fileName = Date.parse(new Date()) + ext;
+			let link = document.createElement('a');
+			link.href = window.URL.createObjectURL(res);
+			link.download = fileName;
+			link.click();
+			window.URL.revokeObjectURL(link.href);
 		}
 	</script>
 </body>

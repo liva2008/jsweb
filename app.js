@@ -59,5 +59,25 @@ router.post('/test3', async (ctx) =>{
     ctx.res.body = ctx.req.post;
 })
 
+router.post('/test4', async (ctx) =>{
+    // post data in ctx.req.post: formData
+    //console.log('hello')
+    console.log(ctx.req.post);
+    
+    //ctx.res.setHeader("Content-Type",'text/plain;charset=utf-8');
+    
+    ctx.res.body = ctx.req.post;
+})
+
+router.post('/test5', async (ctx) =>{
+    // post data in ctx.req.post: formData
+    //console.log('hello')
+    console.log(ctx.req.post);
+    
+    ctx.res.setHeader("Content-Type",ctx.req.headers.get('Content-Type'));
+    
+    ctx.res.body = ctx.req.post;
+})
+
 app.use(router.routes());
 app.listen('127.0.0.1', 5000);
