@@ -4,29 +4,29 @@
 *
 * @param {string} url post address
 * @param data may be javascript object, string, FormData, Blob
-* @param {string} type may be application/json(javascript object), 
+* @param {string} requestType may be application/json(javascript object), 
 *                    multipart/form-data(FormData), 
 *                    text/*, text/plain, text/html, text/css, text/javascript(string)
 *                    image/*, image/jpeg, image/png, image/gif, image/svg+xml(Blob)
 *                    application/*, application/octet-stream, application/pdf,application/zip(Blob) 
-*      
+* @param {string}  responseType text, json, blob, formdata, arraybuffer, stream     
 * @return may be javascript object, String, FormData, Blob              
 * @license 0.1.6
 */
 
-async function postData(url = '', data = new Blob(), type = 'text/*') {
+async function postData(url = '', data = new Blob(), requestType = 'text/*', responseType = 'text') {
     
-    if(type.match("application/json")){  // application/json
+    if(requestType.match("application/json")){  // application/json
         return await postJSON(url, data);
     }
-    else if(type.match("multipart/form-data")){ // multipart/form-data
+    else if(requestType.match("multipart/form-data")){ // multipart/form-data
         return await  postFORM(url, data);
     }
-    else if(type.match('text/*')){ // text/plain, text/html, text/css, text/javascript
+    else if(requestType.match('text/*')){ // text/plain, text/html, text/css, text/javascript
         return await  postTEXT(url, data);
     }
     else{ // image/*, audio/*, video/*, application/*
-        return await postBLOB(url, data, type);
+        return await postBLOB(url, data, requestType);
     }
 }
 

@@ -3,7 +3,7 @@ import { Application, Router,cors } from "./mod.js";
 
 // deno run --allow-net app.js
 // node app.js
-let app = new Application('node');
+let app = new Application('deno');
 let router = new Router();
 
 
@@ -34,49 +34,58 @@ router.get('/hi', function (ctx) {
 //post test using index.html in jsweb folder
 router.post('/test1', async (ctx) =>{
     // post data in ctx.req.post:json
-    console.log(ctx.req.post);
+    let d = await ctx.req.post.get('json');
     ctx.res.setHeader("Content-Type",'application/json;charset=utf-8');
-    ctx.res.body = JSON.stringify(ctx.req.post);
+    ctx.res.body = JSON.stringify(d);
+    /*
+    console.log(ctx.req.post.json);
+    let x = new Uint8Array(ctx.req.post.arrayBuffer);
+    console.log(x[0]);
+    ctx.res.setHeader("Content-Type",'application/json;charset=utf-8');
+    ctx.res.body = JSON.stringify(ctx.req.post.json);
+    */
+    
 })
 
 router.post('/test2', async (ctx) =>{
     // post data in ctx.req.post: formData
     //console.log('hello')
-    console.log(ctx.req.post);
+    console.log(ctx.req.post.formData);
     
+    //form data deno not setting, node must be setting content-type
     //ctx.res.setHeader("Content-Type",ctx.req.headers.get('Content-Type'));
     
-    ctx.res.body = ctx.req.post;
+    ctx.res.body = ctx.req.post.formData;
 })
 
 router.post('/test3', async (ctx) =>{
-    // post data in ctx.req.post: formData
+    // post data in ctx.req.post: text
     //console.log('hello')
-    console.log(ctx.req.post);
-    
-    ctx.res.setHeader("Content-Type",'text/plain;charset=utf-8');
-    
-    ctx.res.body = ctx.req.post;
-})
-
-router.post('/test4', async (ctx) =>{
-    // post data in ctx.req.post: formData
-    //console.log('hello')
-    console.log(ctx.req.post);
-    
-    //ctx.res.setHeader("Content-Type",'text/plain;charset=utf-8');
-    
-    ctx.res.body = ctx.req.post;
-})
-
-router.post('/test5', async (ctx) =>{
-    // post data in ctx.req.post: formData
-    //console.log('hello')
-    console.log(ctx.req.post);
+    console.log(ctx.req.post.text);
     
     ctx.res.setHeader("Content-Type",ctx.req.headers.get('Content-Type'));
     
-    ctx.res.body = ctx.req.post;
+    ctx.res.body = ctx.req.post.text;
+})
+
+router.post('/test4', async (ctx) =>{
+    // post data in ctx.req.post: Blob
+    //console.log('hello')
+    console.log(ctx.req.post.text);
+    
+    ctx.res.setHeader("Content-Type",ctx.req.headers.get('Content-Type'));
+    
+    ctx.res.body = ctx.req.post.text;
+})
+
+router.post('/test5', async (ctx) =>{
+    // post data in ctx.req.post: Blob
+    //console.log('hello')
+    console.log(ctx.req.post.blob);
+    
+    ctx.res.setHeader("Content-Type",ctx.req.headers.get('Content-Type'));
+    
+    ctx.res.body = ctx.req.post.blob;
 })
 
 app.use(router.routes());
