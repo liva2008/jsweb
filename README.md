@@ -279,7 +279,9 @@ await db.close();
 
 ## Brower
 
-- async function postData(url = '', data = '', requestType = 'text/*', responseType = 'text')
+- postData function
+  
+```javascript
 
 /* 
 * @description POST method send data
@@ -288,13 +290,17 @@ await db.close();
 * @param data may be javascript object, string, FormData, Blob
 * @param {string} requestType may be application/json(javascript object), 
 *                    multipart/form-data(FormData), 
-*                    text/*, text/plain, text/html, text/css, text/javascript(String)
+*                    text/*, text/plain, text/html, text/css, text/javascript(string)
 *                    image/*, image/jpeg, image/png, image/gif, image/svg+xml(Blob)
 *                    application/*, application/octet-stream, application/pdf,application/zip(Blob) 
 * @param {string}  responseType text, json, blob, formdata, arraybuffer, stream     
 * @return may be javascript object, String, FormData, Blob              
 * @license 0.1.6
 */
+
+async function postData(url = '', data = '', requestType = 'text/*', responseType = 'text')
+
+```
 
 - example
 
