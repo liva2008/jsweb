@@ -404,4 +404,3 @@ async function postData(url = '', data = '', requestType = 'text/*', responseTyp
 </html>
 
 ```
-
