@@ -28,7 +28,7 @@
 			let user = { username: username.value, password: password.value };
 			console.log(user);
 
-			let res = await postData('http://localhost:5000/test1', user, 'application/json');
+			let res = await postData('http://localhost:5000/test1', user, 'application/json', 'json');
 			let ret = document.getElementById('result');
 			//服务器返回的数据
 			ret.innerHTML = JSON.stringify(res);
@@ -41,7 +41,7 @@
 			let formdata = new FormData(form);
 			console.log(formdata);
 
-			let res = await postData('http://localhost:5000/test2', formdata, 'multipart/form-data');
+			let res = await postData('http://localhost:5000/test2', formdata, 'multipart/form-data', 'formdata');
 			let ret = document.getElementById('result');
 			//服务器返回的数据
 			ret.innerHTML = res.get('username') + "|" + res.get('password') + "|" + `<img src="${URL.createObjectURL(res.get('myfile'))}">`;
@@ -52,7 +52,7 @@
 			let username = document.querySelector('#username');
 			let password = document.querySelector('#password');
 
-			let res = await postTEXT('http://localhost:5000/test3', `${username.value}|${password.value}`, 'text/plain');
+			let res = await postData('http://localhost:5000/test3', `${username.value}|${password.value}`, 'text/plain', 'text');
 			let ret = document.getElementById('result');
 			//服务器返回的数据
 			ret.innerHTML = res;
@@ -62,7 +62,7 @@
 
 			const leoHtmlFragment = ['<a id="a"><b id="b">hey leo！</b></a>']; // 一个包含 DOMString 的数组
 			const leoBlob = new Blob(leoHtmlFragment, { type: 'text/html' });   // 得到 blob
-			let res = await postData('http://localhost:5000/test4', leoBlob, 'text/html');
+			let res = await postData('http://localhost:5000/test4', leoBlob, 'text/html', 'text');
 			let ret = document.getElementById('result');
 			ret.innerHTML = res;
 		}
@@ -71,7 +71,7 @@
 
 			console.log(files[0]);
 
-			let res = await postData('http://localhost:5000/test5', files[0], files[0].type);
+			let res = await postData('http://localhost:5000/test5', files[0], files[0].type, 'blob');
 			console.log(res);
 			let ext = '';
 			if(res.type == 'image/png')
