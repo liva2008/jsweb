@@ -1,6 +1,9 @@
 # jsweb
 
 - jsweb is a fullstack micro web framework based on node and deno.
+    - Web Server(node, deno)
+    - Database(sqlite, mysql)
+    - Browser(Chrome, Edge, Firefox)
 
 ## Web Server
 
