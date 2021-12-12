@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        input{
+            border-radius: 0px;
+        }
+    </style>
+</head>
+<body>
+    <input type='text'/>
+    <template id='userLoginTemplate'>
+        <style>
+            input{
+                border-radius: 5px;
+            }
+        </style>
+        <label>Login</label>
+        <input type='text' id="username" />
+        <input type="password" id='password' />
+        <button >Login</button>
+    </template>
+    <user-card name='jsweb'></user-card>
+    <input type='text'/>
+    <script>
+        class UserCard extends HTMLElement {
+            constructor(){
+                super();
+                
+                let shadow = this.attachShadow( { mode: 'closed' } );
+                let tempElem = document.getElementById('userLoginTemplate');
+                let content = tempElem.content.cloneNode(true);
+                content.querySelector('label').innerHTML += this.getAttribute('name');
+                //this.appendChild(content);
+                shadow.appendChild(content);
+
+
+                this.button = shadow.querySelector('button');
+                //this.button = this.querySelector('button');
+                this.button.addEventListener('click',()=>{
+                    alert("hello");
+                })
+            }
+        }
+
+        window.customElements.define('user-card', UserCard);
+    </script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./index.js"></script>
+</head>
+
+<body>
+    <div id='login'></div>
+    <script>
+        class LoginForm extends Componnet {
+            constructor() {
+                super();
+                this.state = { username: 'your name',
+                               password: 'your pwd' };
+            }
+
+            handleChange1(event) {
+                this.state.username = event.target.value ;
+            }
+
+            handleChange2(event) {
+                this.state.password = event.target.value ;
+            }
+
+            async handleChange3(event) {
+                let res = await postData('http://localhost:5000/test1', this.state, 'application/json', 'json');
+                alert(JSON.stringify(res));
+            }
+
+            render() {
+                return `
+                    <input type="text" value='${this.state.username}'' onChange='${this.objectName}.handleChange1(event)' />
+                    <input type="password" value='${this.state.password}'' onChange='${this.objectName}.handleChange2(event)' />
+                    <input type='button' value='login' onclick='${this.objectName}.handleChange3(event)' />
+                `;
+            }
+        }
+
+        function loginUI(props){
+            return `
+                <h1>Login ${props.name}</h1>
+                <hr>
+                ${render(LoginForm)}<br>
+                ${render(LoginForm)}<br>
+                ${render(LoginForm)}<br>
+            `;
+        }
+
+        let element = `<a href='https://www.jscoding.net'>jscoding</a>`;
+
+        function test(){
+            return `
+                ${render(loginUI, null, {name:'jsweb'})}
+                <hr>
+                ${render(element)}
+            `;
+        }
+
+        render(test, 'login');
+    </script>
+</body>
+
+</html>
