@@ -1,37 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
-        input{
+        input {
             border-radius: 0px;
         }
     </style>
 </head>
+
 <body>
-    <input type='text'/>
+    <input type='text' />
     <template id='userLoginTemplate'>
         <style>
-            input{
+            input {
                 border-radius: 5px;
             }
         </style>
         <label>Login</label>
         <input type='text' id="username" />
         <input type="password" id='password' />
-        <button >Login</button>
+        <button>Login</button>
     </template>
     <user-card name='jsweb'></user-card>
-    <input type='text'/>
+    <input type='text' />
+    <login-card></login-card>
+    <login-card1></login-card1>
     <script>
-        class UserCard extends HTMLElement {
-            constructor(){
+
+        class Componnet extends HTMLElement {
+            constructor() {
                 super();
-                
-                let shadow = this.attachShadow( { mode: 'closed' } );
+                this.shadow = this.attachShadow({ mode: 'open' });
+            }
+        }
+
+        class LoginCard extends Componnet {
+            constructor() {
+                super();
+                let tempElem = document.getElementById('userLoginTemplate');
+                let content = tempElem.content.cloneNode(true);
+                this.shadow.appendChild(content);
+
+                this.button = this.shadow.querySelector('button');
+                //this.button = this.querySelector('button');
+                this.button.addEventListener('click', () => {
+                    alert("test");
+                })
+            }
+        }
+
+        class LoginCard1 extends Componnet {
+
+            constructor() {
+                super();
+
+                this.state = {
+                    username: 'your name',
+                    password: 'your pwd'
+                };
+
+                let template = `
+                <style>
+                input{
+                    border-radius: 10px;
+                }    
+                </style>
+                <input type="text" id='username' value='${this.state.username}''/>
+                    <input type="password" id='password' value='${this.state.password}''/>
+                    <input type='button' id='login' value='login' />
+                `;
+                this.shadow.innerHTML = template;
+
+                this.shadow.querySelector('#username').addEventListener('change', (event) => {
+                    console.log(event.target.value);
+                    this.state.username = event.target.value;
+                });
+                this.shadow.querySelector('#password').addEventListener('change', (event) => {
+                    this.state.password = event.target.value;
+                });
+                this.shadow.querySelector('#login').addEventListener('click', (event) => {
+                    console.log(this.state);
+                    alert(JSON.stringify(this.state));
+                });
+            }
+        }
+
+        class UserCard extends HTMLElement {
+            constructor() {
+                super();
+
+                let shadow = this.attachShadow({ mode: 'closed' });
                 let tempElem = document.getElementById('userLoginTemplate');
                 let content = tempElem.content.cloneNode(true);
                 content.querySelector('label').innerHTML += this.getAttribute('name');
@@ -41,13 +104,16 @@
 
                 this.button = shadow.querySelector('button');
                 //this.button = this.querySelector('button');
-                this.button.addEventListener('click',()=>{
+                this.button.addEventListener('click', () => {
                     alert("hello");
                 })
             }
         }
 
         window.customElements.define('user-card', UserCard);
+        customElements.define('login-card', LoginCard);
+        customElements.define('login-card1', LoginCard1);
     </script>
 </body>
+
 </html>
