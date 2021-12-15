@@ -1,6 +1,9 @@
+window.jsweb = {};
+
 class Componnet {
-    constructor(objName) {
-        this.objName = objName;
+    constructor(objectName) {
+        this.objectName = 'jsweb.' + objectName;
+        this.state = {};
     }
 }
 
@@ -12,26 +15,26 @@ function guid() {
     });
 }
 
-function render(componnet, containter) {
+function render(componnet, containter, ...parameter) {
     if (containter) {
         if (componnet.toString().match(/^class/)) {
             let objName = guid();
-            window[objName] = new componnet(objName);
-            window[objName].objName = objName;
-            document.getElementById(containter).innerHTML = window[objName].render();
+            window.jsweb[objName] = new componnet(...parameter);
+            window.jsweb[objName].objectName = 'jsweb.' + objName;
+            document.getElementById(containter).innerHTML = window.jsweb[objName].render();
         } else if (componnet.toString().match(/^function/)) {
-            document.getElementById(containter).innerHTML = componnet();
+            document.getElementById(containter).innerHTML = componnet(...parameter);
         } else {
             document.getElementById(containter).innerHTML = componnet;
         }
     } else {
         if (componnet.toString().match(/^class/)) {
             let objName = guid();
-            window[objName] = new componnet(objName);
-            window[objName].objName = objName;
-            return window[objName].render();
+            window.jsweb[objName] = new componnet(...parameter);
+            window.jsweb[objName].objectName = 'jsweb.' + objName;
+            return window.jsweb[objName].render();
         } else if (componnet.toString().match(/^function/)) {
-            return componnet();
+            return componnet(...parameter);
         } else {
             return componnet;
         }

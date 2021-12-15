@@ -11,6 +11,7 @@
             border-radius: 0px;
         }
     </style>
+    <script src='./index.js'></script>
 </head>
 
 <body>
@@ -22,35 +23,56 @@
             }
         </style>
         <label>Login</label>
-        <input type='text' id="username" />
+        <input type='text' id="username" value="${this.state.username}" />
         <input type="password" id='password' />
         <button>Login</button>
     </template>
     <user-card name='jsweb'></user-card>
     <input type='text' />
     <login-card></login-card>
-    <login-card1></login-card1>
+    <login-card1 href='http://localhost:5000/test1'></login-card1>
+    <login-card1 href='http://localhost:5000/test1'></login-card1>
+    <my-button label="test"></my-button>
     <script>
 
         class Componnet extends HTMLElement {
             constructor() {
                 super();
-                this.shadow = this.attachShadow({ mode: 'open' });
+                this.state = {};
+                this.shadow = this.attachShadow({ mode: 'closed' });
+                this.setState();
+                let temp = this.template();
+                if (typeof (temp) == 'string') {
+                    this.shadow.innerHTML = temp;
+                }
+                else if (typeof (temp) == 'object') {
+                    let content = temp.content.cloneNode(true);
+                    this.shadow.appendChild(content);
+                }
+            }
+
+            template() {
+                return null;
+            }
+
+            setState() {
+                ;
             }
         }
 
         class LoginCard extends Componnet {
             constructor() {
                 super();
-                let tempElem = document.getElementById('userLoginTemplate');
-                let content = tempElem.content.cloneNode(true);
-                this.shadow.appendChild(content);
 
                 this.button = this.shadow.querySelector('button');
                 //this.button = this.querySelector('button');
                 this.button.addEventListener('click', () => {
                     alert("test");
                 })
+            }
+
+            template() {
+                return document.getElementById('userLoginTemplate');
             }
         }
 
@@ -59,12 +81,25 @@
             constructor() {
                 super();
 
+                this.props = {};
+
+                this.props.href = this.getAttribute('href');
+
+                //// 为了在回调中使用 `this`，这个绑定是必不可少的
+                this.handleChange1 = this.handleChange1.bind(this);
+                this.handleChange2 = this.handleChange2.bind(this);
+                this.handleChange3 = this.handleChange3.bind(this);
+            }
+
+            setState() {
                 this.state = {
                     username: 'your name',
                     password: 'your pwd'
                 };
+            }
 
-                let template = `
+            template() {
+                return `
                 <style>
                 input{
                     border-radius: 10px;
@@ -73,20 +108,33 @@
                 <input type="text" id='username' value='${this.state.username}''/>
                     <input type="password" id='password' value='${this.state.password}''/>
                     <input type='button' id='login' value='login' />
+                    <div id='result'></div>
                 `;
-                this.shadow.innerHTML = template;
+            }
 
-                this.shadow.querySelector('#username').addEventListener('change', (event) => {
-                    console.log(event.target.value);
-                    this.state.username = event.target.value;
-                });
-                this.shadow.querySelector('#password').addEventListener('change', (event) => {
-                    this.state.password = event.target.value;
-                });
-                this.shadow.querySelector('#login').addEventListener('click', (event) => {
-                    console.log(this.state);
-                    alert(JSON.stringify(this.state));
-                });
+            connectedCallback() {
+                this.shadow.querySelector('#username').addEventListener('change', this.handleChange1);
+                this.shadow.querySelector('#password').addEventListener('change', this.handleChange2);
+                this.shadow.querySelector('#login').addEventListener('click', this.handleChange3);
+            }
+
+            handleChange1(event) {
+                console.log(event.target.value);
+                console.log(this)
+                this.state.username = event.target.value;
+            }
+
+            handleChange2(event) {
+                this.state.password = event.target.value;
+            }
+
+            async handleChange3(event) {
+                console.log(this);
+                console.log(this.state);
+                console.log(this.props);
+
+                let res = await postData(this.props.href, this.state, 'application/json', 'json');
+                alert(JSON.stringify(res));
             }
         }
 
@@ -109,6 +157,70 @@
                 })
             }
         }
+
+        const template = document.createElement('template');
+
+        template.innerHTML = `
+  <style>
+    .container {
+      padding: 8px;
+    }
+
+    button {
+      display: block;
+      overflow: hidden;
+      position: relative;
+      padding: 0 16px;
+      font-size: 16px;
+      font-weight: bold;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      cursor: pointer;
+      outline: none;
+
+      width: 100%;
+      height: 40px;
+
+      box-sizing: border-box;
+      border: 1px solid #a1a1a1;
+      background: #ffffff;
+      box-shadow: 0 2px 4px 0 rgba(0,0,0, 0.05), 0 2px 8px 0 rgba(161,161,161, 0.4);
+      color: #363636;
+      cursor: pointer;
+    }
+  </style>
+
+  <div class="container">
+    <button>Label</button>
+  </div>
+`;
+
+        class Button extends HTMLElement {
+            constructor() {
+                super();
+
+                this._shadowRoot = this.attachShadow({ mode: 'open' });
+                this._shadowRoot.appendChild(template.content.cloneNode(true));
+
+                this.$button = this._shadowRoot.querySelector('button');
+            }
+
+            static get observedAttributes() {
+                return ['label'];
+            }
+
+            attributeChangedCallback(name, oldVal, newVal) {
+                this[name] = newVal;
+
+                this.render();
+            }
+
+            render() {
+                this.$button.innerHTML = this.label;
+            }
+        }
+
+        window.customElements.define('my-button', Button);
 
         window.customElements.define('user-card', UserCard);
         customElements.define('login-card', LoginCard);
