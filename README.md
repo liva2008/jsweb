@@ -14,4 +14,4 @@
   - 11.前端与后端采用fetch异步通信技术。
 
 - 文档
-	- (jsweb教程)[]
+	- <a href="https://www.jscoding.net/shell/index.html?name=jsweb&run=1" target="_blank">jsweb教程</a>
