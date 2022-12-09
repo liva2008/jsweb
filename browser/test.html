@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Post test</title>
+	<script src="fetch.js"></script>
+	<script src="jsweb.js"></script>
+	<script src="index.js"></script>
+</head>
+
+<body>
+	<form id="myForm">
+		<input type='text' id='username' name='username'>
+		<input type="password" id='password' name="password">
+		<input type="file" id='myfile' name="myfile" accept="image/*">
+		<input type="button" onclick="sendJSON()" value="sendJSON">
+		<input type="button" onclick="sendFORM()" value="sendFORM">
+		<input type="button" onclick="sendTEXT()" value="sendTEXT">
+		<input type="button" onclick="sendBLOB()" value="sendBLOB">
+	</form>
+	<br>
+	图片上传下载：<input type="file" id='myfile1' name="myfile1" accept="image/*" multiple onchange="updownLoad(this.files)">
+	<br>
+	流式上传：<input type="file" id='myfile2' name="myfile2" accept="application/*" multiple
+		onchange="sendStream(this.files)">
+	<br>
+	图片流式上传下载：<input type="file" id='myfile3' name="myfile3" accept="image/*" multiple
+		onchange="updownLoadByStream(this.files)">
+	<div id="result"></div>
+	<script>
+		async function sendJSON() {
+			let username = document.querySelector('#username');
+			let password = document.querySelector('#password');
+			//待提交的数据
+			let user = { username: username.value, password: password.value };
+			console.log(user);
+
+			let res = await jswebFetchData('http://localhost:5000/test1', 'POST', user, 'application/json');
+			let body = await res.json();
+			let ret = document.getElementById('result');
+			//服务器返回的数据
+			ret.innerHTML = JSON.stringify(body);
+		}
+
+		async function sendFORM() {
+
+			let form = document.querySelector("#myForm");
+			//将获得的表单元素作为参数，对formData进行初始化
+			let formdata = new FormData(form);
+			console.log(formdata);
+
+			let res = await jswebFetchData('http://localhost:5000/test2', 'POST', formdata, 'multipart/form-data');
+			let body = await res.formData();
+			let ret = document.getElementById('result');
+			//服务器返回的数据
+			ret.innerHTML = body.get('username') + "|" + body.get('password') + "|" + `<img src="${window.URL.createObjectURL(body.get('myfile'))}">`;
+		}
+
+		async function sendTEXT() {
+
+			let username = document.querySelector('#username');
+			let password = document.querySelector('#password');
+
+			let res = await jswebFetchData('http://localhost:5000/test3', 'POST', `${username.value}|${password.value}`, 'text/plain');
+			let body = await res.text();
+			let ret = document.getElementById('result');
+			//服务器返回的数据
+			ret.innerHTML = body ;
+		}
+
+		async function sendBLOB() {
+
+			const leoHtmlFragment = ['<a id="a"><b id="b">hey leo！</b></a>']; // 一个包含 DOMString 的数组
+			const leoBlob = new Blob(leoHtmlFragment, { type: 'text/html' });   // 得到 blob
+			let res = await jswebFetchData('http://localhost:5000/test4', 'POST', leoBlob, 'text/html');
+			let body = await res.text();
+			let ret = document.getElementById('result');
+			ret.innerHTML = body;
+		}
+
+		async function updownLoad(files) {
+
+			console.log(files[0]);
+
+			let res = await jswebFetchData('http://localhost:5000/test5', 'POST', files[0], files[0].type);
+			let body = await res.blob();
+			let ext = '';
+			if (body.type == 'image/png')
+				ext = '.png';
+			else if (body.type == 'image/jpeg')
+				ext = '.jpg';
+			else if (body.type == 'image/gif')
+				ext = '.gif';
+			else if (body.type == 'image/svg+xml') {
+				ext = '.svg';
+			}
+			let fileName = Date.parse(new Date()) + ext;
+			let link = document.createElement('a');
+			link.href = window.URL.createObjectURL(body);
+			link.download = fileName;
+			link.click();
+			window.URL.revokeObjectURL(link.href);
+		}
+
+		async function updownLoadByStream(files) {
+
+			console.log(files[0]);
+
+			let res = await jswebFetchData('http://localhost:5000/test7', 'POST', files[0], files[0].type);
+			let body = await res.body;
+			// Step 1：获得一个 reader
+			let reader = body.getReader();
+
+			// Step 2：获得总长度（length）
+			const contentLength = res.headers.get('Content-Length');
+			// Step 3：读取数据
+			let receivedLength = 0; // 当前接收到了这么多字节
+			let chunks = []; // 接收到的二进制块的数组（包括 body）
+			while (true) {
+				const { done, value } = await reader.read();
+
+				if (done) {
+					break;
+				}
+
+				chunks.push(value);
+				receivedLength += value.length;
+
+				console.log(`Read ${receivedLength}`)
+			}
+			console.log(chunks)
+			let ext = '';
+			let type = res.headers.get("Content-Type");
+			console.log(type);
+			if (type=='image/png')
+				ext = '.png';
+			else if (type=='image/jpeg')
+				ext = '.jpg';
+			else if (type=='image/gif')
+				ext = '.gif';
+			else if (type=='image/svg+xml') {
+				ext = '.svg';
+			}
+			let fileName = Date.parse(new Date()) + ext;
+			let link = document.createElement('a');
+			link.href = window.URL.createObjectURL(new Blob(chunks, { type: res.headers.get("Content-Type") }));
+			link.download = fileName;
+			link.click();
+			window.URL.revokeObjectURL(link.href);
+		}
+
+		async function sendStream(files) {
+
+			console.log(files[0]);
+
+			let res = await jswebFetchData('http://localhost:5000/test6', 'POST', files[0], files[0].type);
+			let body = await res.text();
+			alert(body);
+		}
+	</script>
+
+	<jsweb-test name='hi' value='liva'></jsweb-test>
+	<jsweb-input></jsweb-input>
+	<jsweb-input1 value='aa'></jsweb-input1>
+	<jsweb-input1 value='bb'></jsweb-input1>
+
+	<jsweb-menu>
+		<button slot="title" class="color:red;">File</button>
+		<div slot="item" onclick="alert('open')">Open</div>
+		<div slot="item">New</div>
+		<div slot="item">Save</div>
+	</jsweb-menu>
+	<br>
+	<jsweb-menu1>
+		<button slot="title">Edit</button>
+		<div slot="item">Copy</div>
+		<div slot="item">Cut</div>
+		<div slot="item">Paste</div>
+	</jsweb-menu1>
+</body>
+
+</html>

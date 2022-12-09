@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>jsweb</title>
+  <link rel="stylesheet" href="index.css">
+  <script src="fetch.js"></script>
+  <script src="jsweb.js"></script>
+  <script src="index.js"></script>
+  <script>
+    //获取登录用户的信息(用户名，用户类型，用户token)
+    let user = JSON.parse(localStorage.getItem("user"));
+    //用户没有登录，则返回登录页面
+    if (user == null) {
+      location.href = "login.html";
+    }
+    window.onload = function () {
+      document.querySelector('#myusername').innerHTML = user ? user.username : '用户';
+      document.querySelector('#username').value = user ? user.username : '用户';
+    }
+    //页面关闭自动注销用户信息:刷新就会退出
+    window.onunload = function () {
+      //localStorage.setItem("user", null);
+    }
+  </script>
+</head>
+
+<body>
+  <!-- 页眉（logo and menu）-->
+  <div class="header">
+    <!-- logo -->
+    <div class="logo">
+      <h3>jsWeb</h3>
+    </div>
+    <!-- menu -->
+    <div class="menu">
+      <jsweb-menu1 id="menu1" class="menuitem">
+        <div slot="title">管理功能</div>
+        <div slot="item" id="menuitem1">用户(传统)</div>
+        <div slot="item" id="menuitem3">用户(标准组件)</div>
+        <div slot="item" id="menuitem4">用户(JSWEB组件)</div>
+      </jsweb-menu1>
+      <jsweb-menu1  id="menu2" class="menuitem">
+        <div slot="title">用户功能</div>
+        <div slot="item" id="menuitem2">修改密码</div>
+      </jsweb-menu1>
+      <div class="menuitem">
+        <a id="myusername">
+          用户
+        </a>
+      </div>
+      <div class="menuitem"><a onclick="logout()">退出</a></div>
+    </div>
+  </div>
+  <script>
+    //管理员功能,普通用户不可见
+    if (user.type != 2) {
+      document.querySelector("#menu1").style.display = 'none';
+    }
+    //退出功能
+    function logout() {
+      localStorage.setItem("user", null);
+      location.href = "login.html";
+    }
+  </script>
+
+  <div id="content1" class="content">
+    <center>
+      <h2>用户管理</h2>
+    </center>
+  </div>
+
+  <script>
+    if (user.type == 2) {
+      //管理员功能
+      get(1, 10);
+    }
+
+    //获取分页数据
+    async function get(page, limit) {
+      //提交地址
+      let url = `${baseUrl}/user/getdata`;
+      //提交数据
+      let body = {
+        username: user.username, //当前登录的用户名
+        page: page,              //当前页码           
+        limit: limit,            //每页行数
+        token: user.token        //认证的jwt token
+      };
+      //提交操作
+      let ret = await jswebFetchData(url, 'POST', body, 'application/json');
+      let data = await ret.json();
+      //返回处理
+      if (data.code == 0) {
+        //成功返回
+
+        //表格采用网络布局,4列表格
+        //表头
+        let table = `
+          <center>
+            <h2>用户管理</h2>
+          </center>
+          <div class="tablecontent">
+            <div class="tablerow">
+              <div class="tablecell"><b>#</b></div>
+              <div class="tablecell"><b>Username</b></div>
+              <div class="tablecell"><b>Type</b></div>
+              <div class="tablecell"><b>Operator</b></div>
+            </div>
+            <div id="userlist">
+          `;
+
+        //每一行
+        for (let i = 0; i < data.data.length; i++) {
+          table += `
+            <div id='${data.data[i]._id}'  class="tablerow">
+              <div class="tablecell">${data.data[i]._id}</div>
+              <div class="tablecell">${data.data[i].username}</div>
+              <div class="tablecell">${data.data[i].type}</div>
+              <div class="tablecell"><input type="button" value="删除" onclick="del('${data.data[i]._id}','${data.data[i].username}')"></div>
+            </div>`;
+        }
+        table += `</div></div>`;
+
+        //分页：首页(|<) 上一页(<<) 当前页 下一页(>>) 尾页(>|)
+        let pages = Math.ceil(data.count / limit);
+        let pagination = `
+        <ul class="pagination">
+          <li><a href="#" onclick='get(1, ${limit})'>|<</a></li>
+          <li><a href="#" onclick='get(${page > 1 ? (page - 1) : 1}, ${limit})'>\<\<</a></li>
+          <li><a href="#" class="active">${page}</a></li>
+          <li><a href="#" onclick='get(${page < pages ? page + 1 : pages}, ${limit})'>\>\></a></li>
+          <li><a href="#" onclick='get(${pages}, ${limit})'>\>|</a></li>
+        </ul>`;
+
+        //显示表和分页
+        document.querySelector("#content1").innerHTML = table + pagination;
+      } else {
+        //失败返回
+        alert(ret.msg);
+      }
+    }
+
+    //删除用户
+    async function del(id, username) {
+      if (confirm(`确实要删除${username}用户吗？`)) {
+        //提交地址
+        let url = `${baseUrl}/user/delete`;
+        //提交数据
+        let body = {
+          currentusername: user.username,
+          ids: [id],
+          token: user.token
+        };
+        //提交操作
+        let ret = await jswebFetchData(url, 'POST', body, 'application/json');
+        let data = await ret.json();
+        //返回处理
+        if (data.code == 0) {
+          //成功
+          let userlist = document.querySelector("#userlist");
+          let n = document.getElementById(`${id}`);
+          userlist.removeChild(n);
+        } else if (data.code == 1) {
+          alert(data.msg);
+        } else if (data.code == 3) {
+          alert(data.msg);
+          location.href = 'login.html';
+        }
+      }
+    }
+  </script>
+
+  <div id="content3" class="content">
+    <jsweb-table url="http://127.0.0.1:5000/user/users" 
+    columns='[{"field": "_id","type":"string", "title":"编号", "width":"4fr", "editable": false}, 
+    {"field": "username","type":"string","title":"用户名", "width":"1fr", "editable": false}, 
+    {"field": "password","type":"string","title":"密码", "width":"4fr", "editable": false}, 
+    {"field": "type","type":"number","title":"类型", "width":"1fr", "editable": true}, 
+    {"field": "operator","type":"number","title":"操作", "width":"1fr", "editable": false}]' 
+    page="1" limit='5' insert='true'></jsweb-table>
+  </div>
+  <div id="content4" class="content">
+    <jsweb-table1 url="http://127.0.0.1:5000/user/users" 
+    columns='[{"field": "_id","type":"string", "title":"编号", "width":"4fr", "editable": false}, 
+    {"field": "username","type":"string","title":"用户名", "width":"1fr", "editable": false}, 
+    {"field": "password","type":"string","title":"密码", "width":"4fr", "editable": false}, 
+    {"field": "type","type":"number","title":"类型", "width":"1fr", "editable": true}, 
+    {"field": "operator","type":"number","title":"操作", "width":"1fr", "editable": false}]' 
+    page="1" limit='5' insert='true'></jsweb-table1>
+  </div>
+
+  <div id="content2" class="content">
+    <center>
+      <h2>修改密码</h2>
+    </center>
+    <form>
+      <label for="username">Username<span id="umsg" style="color: red;"></span></label>
+      <input type="text" id="username" name="username" value="" disabled>
+
+      <label for="oldpassword">Old Password</label>
+      <input type="password" id="oldpassword" name="oldpassword" placeholder="Your old password..">
+
+      <label for="newpassword">New Password</label>
+      <input type="password" id="newpassword" name="newpassword" placeholder="Your new password..">
+
+      <label for="confirmPassword">Confirm Password<span id="pmsg" style="color: red;"></span></label>
+      <input type="password" id="confirmpassword" name="confirmpassword" placeholder="Your confirm password..">
+
+      <input type="button" value="修改密码" onclick="submitCheckAndData()">
+    </form>
+    <script>
+      //修改密码
+      async function submitCheckAndData() {
+        let oldpassword = document.querySelector("#oldpassword");
+        let newpassword = document.querySelector("#newpassword");
+        let confirmPassword = document.querySelector("#confirmpassword");
+
+        if (oldpassword.value == null || oldpassword.value == '') {
+          oldpassword.placeholder = "旧密码不能为空，请输入旧密码!";
+          return false;
+        }
+
+        if (newpassword.value == null || newpassword.value == '') {
+          newpassword.placeholder = "新密码不能为空，请输入新密码!";
+          return false;
+        }
+
+        if (confirmPassword.value == null || confirmPassword.value == '') {
+          confirmPassword.placeholder = "确认新密码不能为空，请输入确认新密码!";
+          return false;
+        }
+
+        if (newpassword.value != confirmPassword.value) {
+          document.querySelector("#pmsg").innerHTML = "(确认新密码与新密码不一致，请重新输入新密码!)";
+
+          return false;
+        }
+        //提交地址
+        let url = `${baseUrl}/user/modpassword`;
+        //提交数据
+        let body = {
+          username: user.username,     //当前登录的用户名
+          oldpassword: oldpassword.value, //旧密码
+          newpassword: newpassword.value, //新密码
+          confirmPassword: confirmPassword.value, //确认新密码
+          token: user.token //用户jwt token
+        };
+        //提交操作
+        let ret = await jswebFetchData(url, 'POST', body, 'application/json');
+        let data = await ret.json();
+        if (data.code == 0) {
+          //成功返回
+          alert(data.msg);
+        } else {
+          //失败返回
+          alert(data.msg);
+        }
+
+      }
+    </script>
+  </div>
+
+  <script>
+    //菜单功能
+    let currentItem = "";
+    //菜单和内容绑定
+    menu(document.querySelector("#menuitem1"), document.querySelector("#content1"));
+    menu(document.querySelector("#menuitem2"), document.querySelector("#content2"));
+    menu(document.querySelector("#menuitem3"), document.querySelector("#content3"));
+    menu(document.querySelector("#menuitem4"), document.querySelector("#content4"));
+
+    function menu(menuitem, content) {
+      menuitem.onclick = () => {
+        //改变当前状态
+        currentItem = menuitem.id;
+
+        //复位状态
+        document.querySelectorAll(".content").forEach(
+          (v) => {
+            v.style.display = "none";
+          }
+        );
+
+        content.style.display = "block";
+      }
+    }
+  </script>
+</body>
+
+</html>

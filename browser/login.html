@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>登录页面</title>
+    <link rel="stylesheet" href="index.css">
+    <script src="fetch.js"></script>
+    <script src="jsweb.js"></script>
+    <script src="index.js"></script>
+</head>
+
+<body>
+    <jsweb-login></jsweb-login>
+    <jsweb-login></jsweb-login>
+    <center><h3>登录页面</h3></center>
+    <div class="form">
+        <form>
+            <label for="username">Username<span id="umsg" style="color: red;"></span></label>
+            <input type="text" id="username" name="username" placeholder="Your username..">
+
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Your password..">
+
+            <label for="captcha">Captcha<span id="cmsg" style="color: red;"></span><img id="code" /></label>
+            <input type="text" id="captcha" name="captcha" placeholder="click here and get the captcha.."
+                onfocus="getCaptcha()">
+
+            <input type="button" value="Login" onclick="submitCheckAndData()">
+        </form>
+    </div>
+    <script>
+        let text;
+
+        //根据用户名获取验证码，防止机器人暴力破解密码
+        async function getCaptcha() {
+            //提交地址
+            let url = `${baseUrl}/user/code`
+            //提交操作
+            let ret = await jswebFetchData(url, 'POST', {}, 'application/json');
+            let data = await ret.json();
+            //返回图片验证码
+            document.querySelector("#code").src = data.code;
+            //返回加密验证码:用于在服务端解密之后与输入的验证码比对
+            text = data.text;
+        }
+
+        //登录功能
+        async function submitCheckAndData() {
+            let username = document.querySelector("#username");
+            let password = document.querySelector("#password");
+            let captcha = document.querySelector('#captcha');
+
+            if (username.value == null || username.value == '') {
+                username.placeholder = "用户名不能为空，请输入用户名!";
+                return false;
+            }
+
+            if (password.value == null || password.value == '') {
+                password.placeholder = "密码不能为空，请输入密码!";
+                return false;
+            }
+
+            if (captcha.value == null || captcha.value == '') {
+                captcha.placeholder = "点击本框获取验证码!";
+                return false;
+            }
+
+            //提交地址
+            let url = `${baseUrl}/user/login`;
+            //提交数据
+            let body = {
+                username: username.value, //登录用户名
+                password: password.value, //密码
+                captcha: captcha.value, //输入的验证码
+                text: text //服务器返回的加密验证码
+            };
+            //提交操作
+            let ret = await jswebFetchData(url, 'POST', body, 'application/json');
+            let data = await ret.json();
+            //返回处理
+            if (data.code == 0) {
+                //成功返回
+                //将服务器返回的用户信息（用户名username, 用户类型type, 用户token）存入到localStorage
+                //用户登录之后的操作都要将这些用户信息连同其它一起发给服务器
+                //这些用户信息用于验证用户身份
+                //特别是token包含三部分信息：Header(头部).Payload(负载).Signature(签名)
+                localStorage.setItem("user", JSON.stringify({
+                    username: username.value,
+                    type: data.type,
+                    token: data.sign
+                }));
+                //转到index.html页面
+                location.href = "index.html";
+            } else if (data.code == 1 || data.code == 2) {
+                //验证码错误 
+                document.querySelector("#cmsg").innerHTML = data.msg;
+            } else {
+                //登录失败
+                alert(data.msg);
+            }
+        }
+    </script>
+</body>
+
+</html>

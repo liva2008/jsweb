@@ -1,8 +1,10 @@
+//路由器中间件
 import { compose } from "./middleware.js";
 
 export class Router {
     constructor(){
-        this.middleware = [];
+        //处理器数组
+        this.handlerware = [];
     }
     
     get(path, handler){
@@ -13,13 +15,20 @@ export class Router {
         return this.route('POST', path, handler);
     }
 
+    put(path, handler){
+        return this.route('PUT', path, handler);
+    }
+
+    delete(path, handler){
+        return this.route('DELETE', path, handler);
+    }
+
     options(path, handler){
         return this.route('OPTIONS', path, handler);
     }
 
-
     route(method, path, handler) {
-        this.middleware.push(this.generate(method, path, handler));
+        this.handlerware.push(this.generate(method, path, handler));
         return this;
     }
 
@@ -42,11 +51,11 @@ export class Router {
         return match;
     }
 
-    //router middleware
+    //router handlerware
     routes() {
         return async (ctx, next) => {
             await next();
-            await compose(this.middleware)(ctx);
+            await compose(this.handlerware)(ctx);
         }
     }
 }

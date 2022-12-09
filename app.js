@@ -1,120 +1,52 @@
-//import { Application, Router,cors } from "https://deno.land/x/jsweb/mod.js"; //remote
-import { Application, Router,cors } from "./mod.js";
+//import { Application, Router,cors } from "https://deno.land/x/jsweb/mod.js"; //remote jsweb
+import { Application, Router, cors} from "./mod.js"; //local jsweb
+import { captcha, checkUsername, reg, login, getData, remove, modPassword, update, list, add} from './UserDao.ts'; //用户控制器
 
 // deno run --allow-net app.js
-// node app.js
 
-let app = new Application('deno');
+//新建Web应用
+let app = new Application();
+//路由器
 let router = new Router();
 
-//middleware
-app.use(async (ctx, next) => {  
-    console.log(ctx.req.url);
-    await next();
+//错误处理中间件
+app.use(async (ctx, next) => {
+    try {
+      await next();
+    } catch (err) {
+        ctx.res.body = `${err}`;
+        console.log(err);
+    }
 });
 
-//Cross Origin Resource Sharing
+
+//日志中间件
+app.use(async (ctx, next) => {
+    console.log(ctx.req.url);
+    await next();
+    console.log('end.');
+});
+
+//跨域CORS(Cross Origin Resource Sharing)
 app.use(cors);
 
-//get test using http://127.0.0.1:5000/hello
-router.get('/hello', function (ctx) {
-    let body = "<h1>Hello jsweb</h1>";
-    ctx.res.setHeader("Content-Type",'text/html');
-    //send data assign to ctx.res.body
-    ctx.res.body = body;
-})
+//用户微服务
+router.post('/user/code', captcha)  //验证码
+router.post('/user/check', checkUsername) //检测用户名
+router.post('/user/reg', reg)  //注册用户
+router.post('/user/login', login) //登录
+router.post('/user/getdata', getData) //用户列表
+router.post('/user/delete', remove) //删除用户
+router.post('/user/modpassword', modPassword) //修改密码
+router.post('/user/update', update) //修改数据
 
-//get with params test using http://127.0.0.1:5000/hi?name=jsweb
-router.get('/hi', function (ctx) {
-    // get data in ctx.req.get
-    let body = `<h1>Hello ${ctx.req.get.get('name')}</h1>`;
-    ctx.res.setHeader("Content-Type",'text/html');
-    ctx.res.body = body;
-})
-
-//post test using index.html in jsweb folder
-router.post('/test1', async (ctx) =>{
-    // post data in ctx.req.post:json
-    let d = await ctx.req.post.get('json');
-    console.log(d);
-    ctx.res.setHeader("Content-Type",'application/json;charset=utf-8');
-    ctx.res.body = JSON.stringify(d);
-    /*
-    console.log(ctx.req.post.json);
-    let x = new Uint8Array(ctx.req.post.arrayBuffer);
-    console.log(x[0]);
-    ctx.res.setHeader("Content-Type",'application/json;charset=utf-8');
-    ctx.res.body = JSON.stringify(ctx.req.post.json);
-    */
-    
-})
-
-router.post('/test2', async (ctx) =>{
-    // post data in ctx.req.post: formData
-    let d = await ctx.req.post.get('formdata');
-    console.log(d);
-    //form data deno not setting, node must be setting content-type
-    ctx.res.setHeader("Content-Type",ctx.req.headers.get('Content-Type'));
-    ctx.res.body = d;
-
-    /*
-    console.log(ctx.req.post.formData);
-    
-    //form data deno not setting, node must be setting content-type
-    //ctx.res.setHeader("Content-Type",ctx.req.headers.get('Content-Type'));
-    
-    ctx.res.body = ctx.req.post.formData;
-    */
-})
-
-router.post('/test3', async (ctx) =>{
-    // post data in ctx.req.post: text
-    //console.log('hello')
-    let d = await ctx.req.post.get('text');
-    console.log(d);
-    ctx.res.setHeader("Content-Type", ctx.req.headers.get('Content-Type'));
-    ctx.res.body = d;
-    /*
-    console.log(ctx.req.post.text);
-    
-    ctx.res.setHeader("Content-Type",ctx.req.headers.get('Content-Type'));
-    
-    ctx.res.body = ctx.req.post.text;
-    */
-})
-
-router.post('/test4', async (ctx) =>{
-    // post data in ctx.req.post: Blob
-    //console.log('hello')
-    let d = await ctx.req.post.get('text');
-    console.log(d);
-    ctx.res.setHeader("Content-Type", ctx.req.headers.get('Content-Type'));
-    ctx.res.body = d;
-    /*
-    console.log(ctx.req.post.text);
-    
-    ctx.res.setHeader("Content-Type",ctx.req.headers.get('Content-Type'));
-    
-    ctx.res.body = ctx.req.post.text;
-    */
-})
-
-router.post('/test5', async (ctx) =>{
-    // post data in ctx.req.post: Blob
-    //console.log('hello')
-    let d = await ctx.req.post.get('blob');
-    console.log(d);
-    ctx.res.setHeader("Content-Type", ctx.req.headers.get('Content-Type'));
-    ctx.res.body = d;
-    /*
-    console.log(ctx.req.post.blob);
-    
-    ctx.res.setHeader("Content-Type",ctx.req.headers.get('Content-Type'));
-    
-    ctx.res.body = ctx.req.post.blob;
-    */
-})
+//users表服务
+router.put('/user/users', update) //修改数据
+router.delete('/user/users', remove) //删除用户
+router.get('/user/users', list) //用户列表
+router.post('/user/users', add) //添加数据
 
 // router middleware
 app.use(router.routes());
+//服务器监听
 app.listen('127.0.0.1', 5000);
