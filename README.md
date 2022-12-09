@@ -15,3 +15,4 @@
 
 - 文档
 	- <a href="https://www.jscoding.net/shell/index.html?name=jsweb&run=1" target="_blank">jsweb教程</a>
+  - 由<a href="https://www.jscoding.net/" target="_blank">极速编程</a>开发。
