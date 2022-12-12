@@ -41,4 +41,4 @@ await client.connect(
 //await client.connect("mongodb://test:123456@127.0.0.1:27017/test");
 await client.connect("mongodb://127.0.0.1:27017");
 
-export const db = client.database("test");
+export const db = client.database("jsweb");

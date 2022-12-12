@@ -6,3 +6,4 @@ export * from './lib/cors.js';       //跨域
 export * from './lib/jwt.ts';        //JSON Web Token
 export * from './lib/mongodb.ts';    //mongodb
 export * from './lib/captcha.ts';    //验证码
+export * from './lib/html.js';    //静态HTML

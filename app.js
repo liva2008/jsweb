@@ -1,5 +1,5 @@
 //import { Application, Router,cors } from "https://deno.land/x/jsweb/mod.js"; //remote jsweb
-import { Application, Router, cors} from "./mod.js"; //local jsweb
+import { Application, Router, cors, html} from "./mod.js"; //local jsweb
 import { captcha, checkUsername, reg, login, getData, remove, modPassword, update, list, add} from './UserDao.ts'; //用户控制器
 
 // deno run --allow-net app.js
@@ -26,6 +26,9 @@ app.use(async (ctx, next) => {
     await next();
     console.log('end.');
 });
+
+//静态HTML服务器中间件
+app.use(html);
 
 //跨域CORS(Cross Origin Resource Sharing)
 app.use(cors);
