@@ -1,5 +1,5 @@
 //import { Application, Router,cors } from "https://deno.land/x/jsweb/mod.js"; //remote jsweb
-import { Application, Router, cors, db, GridFSBucket, ObjectId} from "./mod.js"; //local jsweb
+import { Application, Router, cors, html,error,logger, db, GridFSBucket, ObjectId} from "./mod.js"; //local jsweb
 
 // deno run --allow-net app.js
 
@@ -8,12 +8,14 @@ let app = new Application();
 //路由器
 let router = new Router();
 
-//中间件
-app.use(async (ctx, next) => {
-    //console.log(ctx.req.url);
-    await next();
-    //console.log('end.');
-});
+//错误处理中间件
+app.use(error);
+
+//日志中间件
+app.use(logger);
+
+//静态HTML服务器中间件
+app.use(html);
 
 //跨域CORS(Cross Origin Resource Sharing)
 app.use(cors);
@@ -122,6 +124,10 @@ router.post('/test6', async (ctx) => {
 
     ctx.res.setHeader("Content-Type", 'text/plain');
     ctx.res.body = "ok";
+})
+
+router.get('/test/error', async (ctx)=>{
+    throw new Error("500.");
 })
 
 // router middleware

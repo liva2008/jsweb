@@ -1,5 +1,5 @@
 //import { Application, Router,cors } from "https://deno.land/x/jsweb/mod.js"; //remote jsweb
-import { Application, Router, cors, html} from "./mod.js"; //local jsweb
+import { Application, Router, cors, html,error,logger} from "./mod.js"; //local jsweb
 import { captcha, checkUsername, reg, login, getData, remove, modPassword, update, list, add} from './UserDao.ts'; //用户控制器
 
 // deno run --allow-net app.js
@@ -10,22 +10,10 @@ let app = new Application();
 let router = new Router();
 
 //错误处理中间件
-app.use(async (ctx, next) => {
-    try {
-      await next();
-    } catch (err) {
-        ctx.res.body = `${err}`;
-        console.log(err);
-    }
-});
-
+app.use(error);
 
 //日志中间件
-app.use(async (ctx, next) => {
-    console.log(ctx.req.url);
-    await next();
-    console.log('end.');
-});
+app.use(logger);
 
 //静态HTML服务器中间件
 app.use(html);
