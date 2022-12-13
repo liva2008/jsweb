@@ -1,15 +1,9 @@
-<center>
-<svg width="200" height="200" version="1.1" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="100" cy="100" r="80" stroke="blue" fill="blue" stroke-width="5"/>
-  <line x1="0" x2="200" y1="100" y2="100" stroke="white" fill="white" stroke-width="5"/>
-</svg>
-</center>
+<div align="center">
+<img src="jsweb.svg">
+</div>
 
 
-# jsWeb
-
-- 版本
-  - V1.0.5
+# jsWeb V1.0.5
 
 - jsWeb是一个利用Web标准技术实现的基于Deno和Mongodb的中间件后端和组件前端的前后分离的全栈式Web微框架。
   - 1.前后分离设计，后端服务器提供服务，前端浏览器负责渲染，取代服务页面生成全部在服务器。
