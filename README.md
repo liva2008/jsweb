@@ -18,6 +18,11 @@
   - 10.前端采用Web Components标准组件技术。
   - 11.前端与后端采用fetch异步通信技术。
 
+- Demo
+  - <a href="https://www.jscoding.net/html/reg.html">注册页面</a>
+  - <a href="https://www.jscoding.net/html/login.html">登录页面</a>
+  - <a href="https://www.jscoding.net/html/index.html">管理页面</a>
+
 - 文档
 	- <a href="https://www.jscoding.net/shell/index.html?name=jsweb&run=1" target="_blank">jsweb教程</a>
   - 由<a href="https://www.jscoding.net/" target="_blank">极速编程</a>开发。
