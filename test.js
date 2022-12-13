@@ -48,7 +48,13 @@ router.post('/test1', async (ctx) => {
 router.post('/test2', async (ctx) => {
     // FormData解析
     let d = await ctx.req.formData();
-    console.log(d);
+    console.log(d.get("myfile"));
+    console.log(d.get("myfile").stream());
+    let reader = new FileReader();
+    reader.readAsDataURL(d.get('myfile'));
+    reader.onload = () => {
+        //console.log(reader.result);
+    }
     console.log(ctx.req.headers.get('Content-Type'));
     //formData 不用设置Content-Type:multipart/form-data; boundary=----WebKitFormBoundarymCn9w2dMKkZ0mSAK
     //ctx.res.setHeader("Content-Type", ctx.req.headers.get('Content-Type'));

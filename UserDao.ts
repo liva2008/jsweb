@@ -1,22 +1,12 @@
-import { makeCaptcha, jwt, db } from "./mod.js";
+import { makeCaptcha, jwt } from "./mod.js";
 import { ObjectId } from "https://deno.land/x/mongo@v0.31.1/mod.ts";
 import { Hash } from "https://deno.land/x/checksum@1.4.0/mod.ts";
-
-//用户表结构定义
-interface UserSchema {
-  _id: ObjectId;  //id
-  username: string; //用户名
-  password: string; //密码
-  type: number; // 1:普通用户 2:管理员
-}
+import { users } from "./User.ts"
 
 //JSON Web Token
 let j = new jwt();
 //加载密钥
 await j.loadKey();
-
-//绑定到mongodb数据库中users集合
-const users = db.collection<UserSchema>("users");
 
 //验证码处理器
 export async function captcha(ctx) {

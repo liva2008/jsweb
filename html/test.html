@@ -8,6 +8,8 @@
 	<script src="fetch.js"></script>
 	<script src="jsweb.js"></script>
 	<script src="index.js"></script>
+	<script src="dexie.js"></script>
+	<script src="indexdb.js"></script>
 </head>
 
 <body>
@@ -19,6 +21,7 @@
 		<input type="button" onclick="sendFORM()" value="sendFORM">
 		<input type="button" onclick="sendTEXT()" value="sendTEXT">
 		<input type="button" onclick="sendBLOB()" value="sendBLOB">
+		<input type="button" onclick="saveIndexdb()" value="saveIndexdb">
 	</form>
 	<br>
 	图片上传下载：<input type="file" id='myfile1' name="myfile1" accept="image/*" multiple onchange="updownLoad(this.files)">
@@ -30,6 +33,14 @@
 		onchange="updownLoadByStream(this.files)">
 	<div id="result"></div>
 	<script>
+
+		async function saveIndexdb() {
+			let username = document.querySelector('#username');
+			let password = document.querySelector('#password');
+			//待提交的数据
+			let user = { username: username.value, password: password.value };
+			db.users.add(user);
+		}
 		async function sendJSON() {
 			let username = document.querySelector('#username');
 			let password = document.querySelector('#password');
