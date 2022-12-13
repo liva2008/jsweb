@@ -28,6 +28,9 @@ class JSWEBElement extends HTMLElement {
         //存储属性变量
         let propValue={};
 
+        //组件内部状态
+        let stateValue = {};
+
         //用代理监听属性变量的变化,若变化，则调用更新
         //对属性变量更改，通过this.props代理实现元素视图更新
         this.props = new Proxy(propValue, {
@@ -42,6 +45,21 @@ class JSWEBElement extends HTMLElement {
                 return true;
             }
         })
+
+        //代理监听组件状态变化，变化则更新
+        this.state = new Proxy(stateValue, {
+            set: async (target, prop, val)=>{
+                console.log(target, prop, val);
+                target[prop] = val;
+                if(this.startListen){
+                    //更新元素视图
+                    await this.render();
+                    await this.events();
+                }
+                return true;
+            }
+        })
+
         console.log("super constructor");
     }
 

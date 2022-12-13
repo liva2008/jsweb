@@ -34,6 +34,22 @@ class TestInput1Element extends JSWEBElement {
     }
 }
 
+class TimerElement extends JSWEBElement{
+    constructor(){
+        super();
+        this.state['seconds'] = 0;
+
+        setInterval(() => {
+            console.log(this.state.seconds);
+            this.state.seconds += 1;
+        }, 1000);
+    }
+
+    render(){
+        this.html(`<div>Seconds: ${this.state.seconds}</div>`);
+    }
+}
+
 class TestInputElement extends JSWEBElement {
 
     constructor() {
@@ -1267,3 +1283,4 @@ customElements.define('jsweb-input', TestInputElement);
 customElements.define('jsweb-input1', TestInput1Element);
 customElements.define('jsweb-menu', Menu);
 customElements.define('jsweb-menu1', Menu1);
+customElements.define('jsweb-timer', TimerElement);

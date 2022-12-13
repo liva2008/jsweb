@@ -1,10 +1,21 @@
-# jsweb
+<center>
+<svg width="200" height="200" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="100" cy="100" r="80" stroke="blue" fill="blue" stroke-width="5"/>
+  <line x1="0" x2="200" y1="100" y2="100" stroke="white" fill="white" stroke-width="5"/>
+</svg>
+</center>
+
+
+# jsWeb
+
+- 版本
+  - V1.0.5
 
 - jsWeb是一个利用Web标准技术实现的基于Deno和Mongodb的中间件后端和组件前端的前后分离的全栈式Web微框架。
   - 1.前后分离设计，后端服务器提供服务，前端浏览器负责渲染，取代服务页面生成全部在服务器。
   - 2.前后端采用JSON数据通信，并且前后采用标准Web API实现。
   - 3.前后端async/await异步编程，取代回调函数，简单易用。
-  - 4.数据库采用Mongodb，取代mysql，灵活易用。
+  - 4.后端数据库采用Mongodb，前端数据库采用indexdb。
   - 5.服务器采用REST API设计，取代传统设计。
   - 6.服务器采用无状态会话，取代有状态的服务器，易扩展。
   - 7.服务器端采用JSON Web Token技术签名验证，取代cookie-session设计。
