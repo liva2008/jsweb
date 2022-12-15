@@ -1,4 +1,4 @@
-import { makeCaptcha, jwt } from "./mod.js";
+import { makeCaptcha, makeCaptchaByCanvas, jwt } from "./mod.js";
 import { ObjectId } from "https://deno.land/x/mongo@v0.31.1/mod.ts";
 import { Hash } from "https://deno.land/x/checksum@1.4.0/mod.ts";
 import { users } from "./user.ts"
@@ -11,7 +11,8 @@ await j.loadKey();
 //验证码处理器
 export async function captcha(ctx) {
   //生成验证码
-  const captcha = makeCaptcha();
+  //const captcha = makeCaptcha();
+  const captcha = makeCaptchaByCanvas();
   //验证码图片
   const svgContext = captcha.svgContext
   //验证码文本
