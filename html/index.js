@@ -586,7 +586,8 @@ class Reg extends HTMLElement {
                 username: username.value
             };
             //提交操作
-            let ret = await postJSON(url, body, "json");
+            let res = await jswebFetchData(url, 'POST',  body, 'application/json');
+            let ret = await res.json();
             //返回处理
             if (ret.code == 0) {
                 //成功
