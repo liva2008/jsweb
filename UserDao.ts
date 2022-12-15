@@ -1,7 +1,7 @@
 import { makeCaptcha, jwt } from "./mod.js";
 import { ObjectId } from "https://deno.land/x/mongo@v0.31.1/mod.ts";
 import { Hash } from "https://deno.land/x/checksum@1.4.0/mod.ts";
-import { users } from "./User.ts"
+import { users } from "./user.ts"
 
 //JSON Web Token
 let j = new jwt();

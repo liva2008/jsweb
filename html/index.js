@@ -237,15 +237,15 @@ class TableElement extends JSWEBElement {
             this.page = page;
             let pagination = `
             <ul class="pagination">
-                <li><a a class="active" id="selectall" href="#">全选</a></li>
-                <li><a a class="active" id="unselectall" href="#">取消全选</a></li>
-                <li><a a class="active" id="delete" href="#">删除</a></li>
-                ${insert == 'true' ? '<li><a class="active" id="insert" href="#">新增</a></li>' : ''}
-                <li><a id='firstpage' href="#">|<</a></li>
-                <li><a id='prevpage' href="#">\<\<</a></li>
-                <li><a href="#" class="active">${page}</a></li>
-                <li><a id='nextpage' href="#">\>\></a></li>
-                <li><a id='tailpage' href="#">\>|</a></li>
+                <li><a class="active" id="selectall">全选</a></li>
+                <li><a class="active" id="unselectall">取消全选</a></li>
+                <li><a class="active" id="delete">删除</a></li>
+                ${insert == 'true' ? '<li><a class="active" id="insert">新增</a></li>' : ''}
+                <li><a id='firstpage'>|<</a></li>
+                <li><a id='prevpage'>\<\<</a></li>
+                <li><a class="active">${page}</a></li>
+                <li><a id='nextpage'>\>\></a></li>
+                <li><a id='tailpage'>\>|</a></li>
             </ul>`;
 
             //显示表和分页
@@ -944,15 +944,15 @@ class Table extends HTMLElement {
             let pages = Math.ceil(ret.count / limit);
             let pagination = `
             <ul class="pagination">
-                <li><a a class="active" id="selectall" href="#">全选</a></li>
-                <li><a a class="active" id="unselectall" href="#">取消全选</a></li>
-                <li><a a class="active" id="delete" href="#">删除</a></li>
-                ${insert == 'true' ? '<li><a class="active" id="insert" href="#">新增</a></li>' : ''}
-                <li><a id='firstpage' href="#">|<</a></li>
-                <li><a id='prevpage' href="#">\<\<</a></li>
-                <li><a href="#" class="active">${page}</a></li>
-                <li><a id='nextpage' href="#">\>\></a></li>
-                <li><a id='tailpage' href="#">\>|</a></li>
+                <li><a class="active" id="selectall">全选</a></li>
+                <li><a class="active" id="unselectall">取消全选</a></li>
+                <li><a class="active" id="delete">删除</a></li>
+                ${insert == 'true' ? '<li><a class="active" id="insert">新增</a></li>' : ''}
+                <li><a id='firstpage'>|<</a></li>
+                <li><a id='prevpage'>\<\<</a></li>
+                <li><a class="active">${page}</a></li>
+                <li><a id='nextpage'>\>\></a></li>
+                <li><a id='tailpage'>\>|</a></li>
             </ul>`;
 
             //显示表和分页

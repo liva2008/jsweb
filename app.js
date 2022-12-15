@@ -1,6 +1,6 @@
 //import { Application, Router,cors } from "https://deno.land/x/jsweb/mod.js"; //remote jsweb
-import { Application, Router, cors, html,error,logger} from "./mod.js"; //local jsweb
-import { captcha, checkUsername, reg, login, getData, remove, modPassword, update, list, add} from './UserDao.ts'; //用户控制器
+import { Application, Router, icon, cors, html,error,logger} from "./mod.js"; //local jsweb
+import { captcha, checkUsername, reg, login, getData, remove, modPassword, update, list, add} from './userdao.ts'; //用户控制器
 
 // deno run --allow-net app.js
 
@@ -8,6 +8,9 @@ import { captcha, checkUsername, reg, login, getData, remove, modPassword, updat
 let app = new Application();
 //路由器
 let router = new Router();
+
+//icon中间件
+app.use(icon);
 
 //错误处理中间件
 app.use(error);

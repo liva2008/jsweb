@@ -1,5 +1,5 @@
 //import { Application, Router,cors } from "https://deno.land/x/jsweb/mod.js"; //remote jsweb
-import { Application, Router, cors, html,error,logger, db, GridFSBucket, ObjectId} from "./mod.js"; //local jsweb
+import { Application, Router, icon, cors, html,error,logger, db, GridFSBucket, ObjectId} from "./mod.js"; //local jsweb
 
 // deno run --allow-net app.js
 
@@ -7,6 +7,8 @@ import { Application, Router, cors, html,error,logger, db, GridFSBucket, ObjectI
 let app = new Application();
 //路由器
 let router = new Router();
+//icon中间件
+app.use(icon);
 
 //错误处理中间件
 app.use(error);

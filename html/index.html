@@ -10,6 +10,7 @@
   <script src="fetch.js"></script>
   <script src="jsweb.js"></script>
   <script src="index.js"></script>
+  <script src="router.js"></script>
   <script>
     //获取登录用户的信息(用户名，用户类型，用户token)
     let user = JSON.parse(localStorage.getItem("user"));
@@ -39,13 +40,13 @@
     <div class="menu">
       <jsweb-menu1 id="menu1" class="menuitem">
         <div slot="title">管理功能</div>
-        <div slot="item" id="menuitem1">用户(传统)</div>
-        <div slot="item" id="menuitem3">用户(标准组件)</div>
-        <div slot="item" id="menuitem4">用户(JSWEB组件)</div>
+        <div slot="item" id="menuitem1"><a href="#menuitem1">用户(传统)</a></div>
+        <div slot="item" id="menuitem3"><a href="#menuitem3">用户(标准组件)</a></div>
+        <div slot="item" id="menuitem4"><a href="#menuitem4">用户(JSWEB组件)</a></div>
       </jsweb-menu1>
       <jsweb-menu1  id="menu2" class="menuitem">
         <div slot="title">用户功能</div>
-        <div slot="item" id="menuitem2">修改密码</div>
+        <div slot="item" id="menuitem2"><a href="#menuitem2">修改密码</a></div>
       </jsweb-menu1>
       <div class="menuitem">
         <a id="myusername">
@@ -129,11 +130,11 @@
         let pages = Math.ceil(data.count / limit);
         let pagination = `
         <ul class="pagination">
-          <li><a href="#" onclick='get(1, ${limit})'>|<</a></li>
-          <li><a href="#" onclick='get(${page > 1 ? (page - 1) : 1}, ${limit})'>\<\<</a></li>
-          <li><a href="#" class="active">${page}</a></li>
-          <li><a href="#" onclick='get(${page < pages ? page + 1 : pages}, ${limit})'>\>\></a></li>
-          <li><a href="#" onclick='get(${pages}, ${limit})'>\>|</a></li>
+          <li><a onclick='get(1, ${limit})'>|<</a></li>
+          <li><a onclick='get(${page > 1 ? (page - 1) : 1}, ${limit})'>\<\<</a></li>
+          <li><a class="active">${page}</a></li>
+          <li><a onclick='get(${page < pages ? page + 1 : pages}, ${limit})'>\>\></a></li>
+          <li><a onclick='get(${pages}, ${limit})'>\>|</a></li>
         </ul>`;
 
         //显示表和分页
@@ -265,6 +266,7 @@
   </div>
 
   <script>
+    /*
     //菜单功能
     let currentItem = "";
     //菜单和内容绑定
@@ -288,6 +290,17 @@
         content.style.display = "block";
       }
     }
+    */
+
+    //前端路由器
+    let router = new Router();
+    //添加路由项：第一个参数表hash地址，第二个参数表示对应元素的id
+    router.route("#menuitem1", "#content1");
+    router.route("#menuitem2", "#content2");
+    router.route("#menuitem3", "#content3");
+    router.route("#menuitem4", "#content4");
+    //开始路由
+    router.routes();
   </script>
 </body>
 
