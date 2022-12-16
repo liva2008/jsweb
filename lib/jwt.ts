@@ -1,4 +1,4 @@
-//JSON Web Token
+//JSON Web Token:将jwt对象添加到context对象中
 import {  db } from "./mongodb.ts";
 import { ObjectId } from "https://deno.land/x/mongo@v0.31.1/mod.ts";
 
@@ -22,8 +22,15 @@ export class jwt {
 			"alg": "HS256",
 			"typ": "JWT"
 		  };
-		
 	}
+
+	//jwt middlerware
+    add() {
+        return async (ctx, next) => {
+			ctx.jwt = this;
+            await next();
+        }
+    }
 
 	//从mongodb加载密钥
 	async loadKey(){

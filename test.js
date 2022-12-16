@@ -1,5 +1,5 @@
 //import { Application, Router,cors } from "https://deno.land/x/jsweb/mod.js"; //remote jsweb
-import { Application, Router, icon, cors, html,error,logger, db, GridFSBucket, ObjectId} from "./mod.js"; //local jsweb
+import { Application, Router, icon, cors, html,error,logger, db, GridFSBucket, ObjectId, Session} from "./mod.js"; //local jsweb
 
 // deno run --allow-net app.js
 
@@ -21,6 +21,10 @@ app.use(html);
 
 //跨域CORS(Cross Origin Resource Sharing)
 app.use(cors);
+
+let session = new Session();
+
+app.use(session.add());
 
 //get test using http://127.0.0.1:5000/hello
 router.get('/hello', function (ctx) {
@@ -137,6 +141,20 @@ router.post('/test6', async (ctx) => {
 router.get('/test/error', async (ctx)=>{
     throw new Error("500.");
 })
+
+router.post('/session', async (ctx)=>{
+    let d = await ctx.req.json();
+    console.log(d);
+    d.iat = Date.now();
+    d.exp = 1000 * 60 * 1;
+    ctx.session.set(d);
+    ctx.res.setHeader("Content-Type", 'application/json;charset=utf-8');
+    console.log(ctx.session.get(d.username));
+    ctx.res.body = JSON.stringify(ctx.session.get(d.username));
+})
+
+
+
 
 // router middleware
 app.use(router.routes());

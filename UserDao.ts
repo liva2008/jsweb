@@ -1,24 +1,24 @@
-import { makeCaptcha, makeCaptchaByCanvas, jwt } from "./mod.js";
+import { makeCaptchaBySVG, makeCaptchaByCanvas} from "./mod.js";
 import { ObjectId } from "https://deno.land/x/mongo@v0.31.1/mod.ts";
 import { Hash } from "https://deno.land/x/checksum@1.4.0/mod.ts";
 import { users } from "./user.ts"
 
 //JSON Web Token
-let j = new jwt();
+//let j = new jwt();
 //加载密钥
-await j.loadKey();
+//await j.loadKey();
 
 //验证码处理器
 export async function captcha(ctx) {
   //生成验证码
-  //const captcha = makeCaptcha();
+  //const captcha = makeCaptchaBySVG();
   const captcha = makeCaptchaByCanvas();
   //验证码图片
   const svgContext = captcha.svgContext
   //验证码文本
   const text = captcha.text
   //对验证码文本进行加密，并设置验证码过期时间为10分钟
-  let a = await j.encrypt({ text: text, exp: 1000 * 60 * 10, iat: Date.now() });
+  let a = await ctx.jwt.encrypt({ text: text, exp: 1000 * 60 * 10, iat: Date.now() });
   //返回处理结果
   ctx.res.setHeader("Content-Type", 'application/json;charset=utf-8');
   ctx.res.body = JSON.stringify({ "code": svgContext, "text": a });
@@ -46,7 +46,7 @@ export async function reg(ctx) {
   //获得注册数据
   let data = await ctx.req.json();
   //解密验证码文本
-  let dest = await j.decrypt(data.text);
+  let dest = await ctx.jwt.decrypt(data.text);
   //解析验证码
   let code = JSON.parse(dest);
   if ((code.text == null) || (code.text.toLowerCase() != data.captcha.toLowerCase())) {
@@ -95,7 +95,7 @@ export async function login(ctx) {
   //获得提交数据
   let data = await ctx.req.json();
   //解密验证码
-  let dest = await j.decrypt(data.text);
+  let dest = await ctx.jwt.decrypt(data.text);
   //解析验证码
   let code = JSON.parse(dest);
   if (code.text.toLowerCase() != data.captcha.toLowerCase()) {
@@ -116,7 +116,7 @@ export async function login(ctx) {
   if (user) {
     //登录成功，发送jwt
     //生成JSON Web Token
-    let sign = await j.sign({ username: user.username, type: user.type, exp: 1000 * 60 * 60 * 12, iat: Date.now() });
+    let sign = await ctx.jwt.sign({ username: user.username, type: user.type, exp: 1000 * 60 * 60 * 12, iat: Date.now() });
     //返回结果
     ctx.res.setHeader("Content-Type", 'application/json;charset=utf-8');
     ctx.res.body = JSON.stringify({ code: 0, msg: '登录成功!', type: user.type, sign: sign });
@@ -132,7 +132,7 @@ export async function getData(ctx) {
   //获取用户提交的数据
   let data = await ctx.req.json();
   //验证用户是否登录
-  let verify = await j.verify(data.token);
+  let verify = await ctx.jwt.verify(data.token);
   if (verify) {
     //已登录
     if (checkAdmin(data.token)) { //判断用户是否为管理员
@@ -177,7 +177,7 @@ export async function list(ctx) {
   //对参数token解码
   let token = decodeURIComponent(data.get('token'));
   //验证用户是否登录
-  let verify = await j.verify(token);
+  let verify = await ctx.jwt.verify(token);
   if (verify) {
     //已登录
     if (checkAdmin(token)) { //判断用户是否为管理员
@@ -235,7 +235,7 @@ export async function remove(ctx) {
   let data = await ctx.req.json();
   //console.log(data);
   //验证数字签名，只能判断用户是否登录及是否过期
-  let verify = await j.verify(data.token);
+  let verify = await ctx.jwt.verify(data.token);
   if (verify) {
     if (checkAdmin(data.token)) { //判断用户是否为管理员
       //在数据库中删除该用户
@@ -273,7 +273,7 @@ export async function modPassword(ctx) {
   //获取用户提交的数据
   let data = await ctx.req.json();
   //验证签名
-  let verify = await j.verify(data.token);
+  let verify = await ctx.jwt.verify(data.token);
   if (verify) {
     //在数据库查找该用户
     const user = await users.findOne({ username: data.username, password: new Hash("md5").digestString(data.oldpassword).hex() });
@@ -313,7 +313,7 @@ export async function update(ctx) {
   //获取用户提交的数据
   let data = await ctx.req.json();
   //验证签名
-  let verify = await j.verify(data.token);
+  let verify = await ctx.jwt.verify(data.token);
   if (verify) {
     if (checkAdmin(data.token)) { //判断用户是否为管理员
       //在数据库查找该文档
@@ -362,7 +362,7 @@ export async function add(ctx) {
   //获取用户提交的数据
   let data = await ctx.req.json();
   //验证签名
-  let verify = await j.verify(data.token);
+  let verify = await ctx.jwt.verify(data.token);
   if (verify) {
     if (checkAdmin(data.token)) { //判断用户是否为管理员
       //在数据库查找该文档

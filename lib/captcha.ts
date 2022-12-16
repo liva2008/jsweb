@@ -14,7 +14,7 @@ export const textHash = (text: string) => {
 };
 
 // Generating Captcha by SVG
-export function makeCaptcha() {
+export function makeCaptchaBySVG() {
   const svgHeight = 120;
   const svgWidth = 300;
   const numberOfCharacters = 4;
@@ -103,7 +103,7 @@ export function makeCaptchaByCanvas() {
     let textRotate = randomNumber(-10, 10);
     ctx.save();
     ctx.rotate((textRotate / 360) * 2 * Math.PI);
-    ctx.font = `${fontSize}px serif`;
+    ctx.font = `bold ${fontSize}px serif`;
     ctx.fillStyle = textColor;
     ctx.fillText(text[character], textElementXPosition, textElementYPosition);
     ctx.restore();

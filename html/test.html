@@ -194,6 +194,17 @@
 	<br>
 	<jsweb-timer></jsweb-timer>
 	<jsweb-timer></jsweb-timer>
+
+	<hr>
+	<button onclick="session()">测试Session</button>
+	<script>
+		async function session(){
+			let res = await jswebFetchData('http://localhost:5000/session', 'POST', {username: 'liva', type:'1'}, 'application/json');
+			let ret = await res.json();
+			console.log(ret);
+		}
+
+	</script>
 </body>
 
 </html>
