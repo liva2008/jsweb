@@ -1,6 +1,6 @@
 //import { Application, Router,cors } from "https://deno.land/x/jsweb/mod.js"; //remote jsweb
 import { Application, Router, icon, cors, html,error,logger,  jwt } from "./mod.js"; //local jsweb
-import { captcha, checkUsername, reg, login, getData, remove, modPassword, update, list, add} from './userdao.ts'; //用户控制器
+import { captcha, checkUsername, reg, login, getData, remove, modPassword, update, list, add, userpri, adminpri} from './userdao.ts'; //用户控制器
 
 // deno run --allow-net app.js
 
@@ -29,6 +29,11 @@ let j = new jwt();
 //加载密钥
 await j.loadKey();
 app.use(j.add());
+
+//用户权限中间件
+app.use(userpri);
+//管理员权限中间件
+app.use(adminpri);
 
 //用户微服务
 router.post('/user/code', captcha)  //验证码

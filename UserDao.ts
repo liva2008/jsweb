@@ -1,4 +1,4 @@
-import { makeCaptchaBySVG, makeCaptchaByCanvas} from "./mod.js";
+import { makeCaptchaBySVG, makeCaptchaByCanvas } from "./mod.js";
 import { ObjectId } from "https://deno.land/x/mongo@v0.31.1/mod.ts";
 import { Hash } from "https://deno.land/x/checksum@1.4.0/mod.ts";
 import { users } from "./user.ts"
@@ -240,7 +240,7 @@ export async function remove(ctx) {
     if (checkAdmin(data.token)) { //判断用户是否为管理员
       //在数据库中删除该用户
       let count = 0;
-      for(let id of data.ids){
+      for (let id of data.ids) {
         const deleteCount = await users.deleteOne({ _id: new ObjectId(id) });
         count += deleteCount;
       }
@@ -361,47 +361,64 @@ export async function update(ctx) {
 export async function add(ctx) {
   //获取用户提交的数据
   let data = await ctx.req.json();
-  //验证签名
-  let verify = await ctx.jwt.verify(data.token);
-  if (verify) {
-    if (checkAdmin(data.token)) { //判断用户是否为管理员
-      //在数据库查找该文档
-      const user = await users.findOne({ username: data.data.username });
-      if (!user) {
-        //若不存在，则添加数据
-        await users.insertOne({
-          username: data.data.username, //用户名
-          password: new Hash("md5").digestString(data.data.password).hex(), //密码,md5加密，管理人员都看不到用户密码
-          type: data.data.type  //用户类型，普通用户
-        });
-        //在数据库再次查找该用户
-        let user1 = await users.findOne({ username: data.data.username });
-        if (user1) {
-          //注册成功
-          ctx.res.setHeader("Content-Type", 'application/json;charset=utf-8');
-          ctx.res.body = JSON.stringify({ code: 0, msg: '添加成功!' });
-        }
-        else {
-          //注册失败
-          ctx.res.setHeader("Content-Type", 'application/json;charset=utf-8');
-          ctx.res.body = JSON.stringify({ code: 1, msg: '添加失败!' });
-        }
-      }
-      else {
-        //数据存在
-        ctx.res.setHeader("Content-Type", 'application/json;charset=utf-8');
-        ctx.res.body = JSON.stringify({ code: 2, msg: '用户名已存在，请重新添加!' });
-      }
+  //在数据库查找该文档
+  const user = await users.findOne({ username: data.data.username });
+  if (!user) {
+    //若不存在，则添加数据
+    await users.insertOne({
+      username: data.data.username, //用户名
+      password: new Hash("md5").digestString(data.data.password).hex(), //密码,md5加密，管理人员都看不到用户密码
+      type: data.data.type  //用户类型，普通用户
+    });
+    //在数据库再次查找该用户
+    let user1 = await users.findOne({ username: data.data.username });
+    if (user1) {
+      //注册成功
+      ctx.res.setHeader("Content-Type", 'application/json;charset=utf-8');
+      ctx.res.body = JSON.stringify({ code: 0, msg: '添加成功!' });
     }
     else {
-      //非管理员
+      //注册失败
       ctx.res.setHeader("Content-Type", 'application/json;charset=utf-8');
-      ctx.res.body = JSON.stringify({ code: 3, msg: '没有管理权限，请更换用户登录!' });
+      ctx.res.body = JSON.stringify({ code: 1, msg: '添加失败!' });
     }
   }
   else {
-    //用户没有登录
+    //数据存在
     ctx.res.setHeader("Content-Type", 'application/json;charset=utf-8');
-    ctx.res.body = JSON.stringify({ code: 4, msg: '没有登录，请登录!' });
+    ctx.res.body = JSON.stringify({ code: 2, msg: '用户名已存在，请重新添加!' });
   }
+}
+
+//普通用户中间件
+export async function userpri(ctx, next) {
+  if (ctx.req.pathname == '/user/user') {
+    let token = ctx.req.headers.get("authorization");
+
+    //验证签名
+    let verify = await ctx.jwt.verify(token);
+    if (!verify) {
+      //用户没有登录
+      ctx.res.setHeader("Content-Type", 'application/json;charset=utf-8');
+      ctx.res.body = JSON.stringify({ code: 4, msg: '没有登录，请登录!' });
+      return;
+    }
+  }
+  await next();
+}
+
+//管理员权限中间件
+export async function adminpri(ctx, next) {
+  if (ctx.req.pathname == '/user/user') {
+    let token = ctx.req.headers.get("authorization");
+    //解析JSON Web Token
+    //Header.Payload.Signature
+    if (!checkAdmin(token)) {
+      //非管理员
+      ctx.res.setHeader("Content-Type", 'application/json;charset=utf-8');
+      ctx.res.body = JSON.stringify({ code: 3, msg: '没有管理权限，请更换用户登录!' });
+      return ;
+    }
+  }
+  await next();
 }

@@ -184,7 +184,7 @@ class TableElement extends JSWEBElement {
         //username可能是中文，token采用base64编码，因此要用encodeURIComponent编码，解析要用decodeURIComponent解码
         let dataurl = url + `?username=${encodeURIComponent(user.username)}&page=${page}&limit=${limit}&token=${encodeURIComponent(user.token)}`;
         //提交操作
-        let res = await jswebFetchData(dataurl, 'GET', {}, "application/json");
+        let res = await jswebFetchData(dataurl, 'GET', {}, "application/json", user.token);
         let ret = await res.json();
         //返回处理
         if (ret.code == 0) {
@@ -409,7 +409,7 @@ class TableElement extends JSWEBElement {
                 token: user.token
             };
             //提交操作
-            let res = await jswebFetchData(url, 'DELETE', body, "application/json");
+            let res = await jswebFetchData(url, 'DELETE', body, "application/json", user.token);
             let ret = await res.json();
             //返回处理
             if (ret.code == 0) {
@@ -439,7 +439,7 @@ class TableElement extends JSWEBElement {
         };
         //console.log(JSON.stringify(body))
         //提交操作
-        let res = await jswebFetchData(url, 'put', body, "application/json");
+        let res = await jswebFetchData(url, 'put', body, "application/json", user.token);
         let ret = await res.json();
         //返回处理
         if (ret.code == 0) {
@@ -463,7 +463,7 @@ class TableElement extends JSWEBElement {
         };
         //console.log(JSON.stringify(body))
         //提交操作
-        let res = await jswebFetchData(url, 'post', body, "application/json");
+        let res = await jswebFetchData(url, 'post', body, "application/json", user.token);
         let ret = await res.json();
         //返回处理
         if (ret.code == 0) {
@@ -893,7 +893,7 @@ class Table extends HTMLElement {
         //username可能是中文，token采用base64编码，因此要用encodeURIComponent编码，解析要用decodeURIComponent解码
         let dataurl = url + `?username=${encodeURIComponent(user.username)}&page=${page}&limit=${limit}&token=${encodeURIComponent(user.token)}`;
         //提交操作
-        let res = await jswebFetchData(dataurl, 'GET', {}, "application/json");
+        let res = await jswebFetchData(dataurl, 'GET', {}, "application/json", user.token);
         let ret = await res.json();
         //返回处理
         if (ret.code == 0) {
@@ -1053,7 +1053,7 @@ class Table extends HTMLElement {
                 token: user.token
             };
             //提交操作
-            let res = await jswebFetchData(url, 'DELETE', body, "application/json");
+            let res = await jswebFetchData(url, 'DELETE', body, "application/json", user.token);
             let ret = await res.json();
             //返回处理
             if (ret.code == 0) {
@@ -1083,7 +1083,7 @@ class Table extends HTMLElement {
         };
         //console.log(JSON.stringify(body))
         //提交操作
-        let res = await jswebFetchData(url, 'put', body, "application/json");
+        let res = await jswebFetchData(url, 'put', body, "application/json", user.token);
         let ret = await res.json();
         //返回处理
         if (ret.code == 0) {
@@ -1107,7 +1107,7 @@ class Table extends HTMLElement {
         };
         //console.log(JSON.stringify(body))
         //提交操作
-        let res = await jswebFetchData(url, 'post', body, "application/json");
+        let res = await jswebFetchData(url, 'post', body, "application/json", user.token);
         let ret = await res.json();
         //返回处理
         if (ret.code == 0) {

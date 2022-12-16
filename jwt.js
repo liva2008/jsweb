@@ -1,4 +1,4 @@
-import { makeCaptcha, jwt, db } from "./mod.js";
+import { jwt } from "./mod.js";
 
 //JSON Web Token
 let j = new jwt();

@@ -92,7 +92,7 @@
         token: user.token        //认证的jwt token
       };
       //提交操作
-      let ret = await jswebFetchData(url, 'POST', body, 'application/json');
+      let ret = await jswebFetchData(url, 'POST', body, 'application/json', user.token);
       let data = await ret.json();
       //返回处理
       if (data.code == 0) {
@@ -157,7 +157,7 @@
           token: user.token
         };
         //提交操作
-        let ret = await jswebFetchData(url, 'POST', body, 'application/json');
+        let ret = await jswebFetchData(url, 'POST', body, 'application/json', user.token);
         let data = await ret.json();
         //返回处理
         if (data.code == 0) {
@@ -251,7 +251,7 @@
           token: user.token //用户jwt token
         };
         //提交操作
-        let ret = await jswebFetchData(url, 'POST', body, 'application/json');
+        let ret = await jswebFetchData(url, 'POST', body, 'application/json', user.token);
         let data = await ret.json();
         if (data.code == 0) {
           //成功返回
