@@ -200,7 +200,7 @@
 	<script>
 		async function session(){
 			let res = await jswebFetchData('http://localhost:5000/session', 'POST', {username: 'liva', type:'1'}, 'application/json');
-			let ret = await res.json();
+			let ret = await res.text();
 			console.log(ret);
 		}
 

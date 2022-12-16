@@ -147,10 +147,10 @@ router.post('/session', async (ctx)=>{
     console.log(d);
     d.iat = Date.now();
     d.exp = 1000 * 60 * 1;
-    ctx.session.set(d);
-    ctx.res.setHeader("Content-Type", 'application/json;charset=utf-8');
-    console.log(ctx.session.get(d.username));
-    ctx.res.body = JSON.stringify(ctx.session.get(d.username));
+    let sessionid = ctx.session.set(d);
+    ctx.res.setHeader("Content-Type", 'text/plain');
+    console.log(ctx.session.get(sessionid));
+    ctx.res.body = sessionid;
 })
 
 
