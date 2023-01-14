@@ -86,7 +86,7 @@ class TestElement extends JSWEBElement {
         this.css(`button{ border: red solid 1px;}`);
     }
 
-    handleClick(event) {
+    handleClick(event)  {
         console.log(this)
         console.log(event.target)
         alert(`${this.props.name} ${this.props.value}`);
